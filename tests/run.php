@@ -247,7 +247,7 @@ foreach ($vectors['cases'] as $case) {
 }
 
 echo "Suppression list" . PHP_EOL;
-$supp = '{"id":"sup_1","app_id":"app_1","channel":"email","value_masked":"a***e@example.com","reason":"manual","source":"api","detail":{},"expires_at":null,"created_at":"2026-10-07T00:00:00.000Z","updated_at":"2026-10-07T00:00:00.000Z"}';
+$supp = '{"id":"sup_1","app_id":"app_1","channel":"email","value_masked":"a***e@pushizo.com","reason":"manual","source":"api","detail":{},"expires_at":null,"created_at":"2026-10-07T00:00:00.000Z","updated_at":"2026-10-07T00:00:00.000Z"}';
 $t = new FakeTransport([
     ['status' => 200, 'body' => '{"data":[' . $supp . '],"next_cursor":"c2","has_more":true}'],
     ['status' => 201, 'body' => $supp],
@@ -255,9 +255,9 @@ $t = new FakeTransport([
     ['status' => 400, 'body' => '{"error":{"code":"HS_VALIDATION_ERROR","message":"Geçersiz adres"}}'],
 ]);
 $hs = new Client(['api_key' => 'k', 'base_url' => 'https://api.test', 'app_id' => 'app_1', 'transport' => $t, 'sleep' => $noSleep]);
-$page = $hs->suppressions->list(['channel' => 'email', 'reason' => 'bounce', 'value' => 'Ayse@Example.com', 'limit' => 20]);
-$assert($t->calls[0]['method'] === 'GET' && $t->calls[0]['url'] === 'https://api.test/v1/apps/app_1/suppressions?channel=email&reason=bounce&value=Ayse%40Example.com&limit=20', 'list sorgusu');
-$assert($page['data'][0]['value_masked'] === 'a***e@example.com' && $page['has_more'] === true, 'list yanıtı');
+$page = $hs->suppressions->list(['channel' => 'email', 'reason' => 'bounce', 'value' => 'Ayse@Pushizo.com', 'limit' => 20]);
+$assert($t->calls[0]['method'] === 'GET' && $t->calls[0]['url'] === 'https://api.test/v1/apps/app_1/suppressions?channel=email&reason=bounce&value=Ayse%40Pushizo.com&limit=20', 'list sorgusu');
+$assert($page['data'][0]['value_masked'] === 'a***e@pushizo.com' && $page['has_more'] === true, 'list yanıtı');
 $created = $hs->suppressions->create(['channel' => 'sms', 'value' => '+905320000111', 'note' => 'müşteri talebi'], 'app_9');
 $assert($t->calls[1]['method'] === 'POST' && $t->calls[1]['url'] === 'https://api.test/v1/apps/app_9/suppressions', 'create yolu (app parametresi)');
 $assert($t->calls[1]['body'] === '{"channel":"sms","value":"+905320000111","note":"müşteri talebi"}', 'create gövdesi (UTF-8)');
@@ -279,7 +279,7 @@ $hs->notifications->create([
     'contents' => ['tr' => 'Siparişin kargoda'],
     'email_subject' => 'Siparişin yolda',
     'email_mjml' => '<mjml><mj-body></mj-body></mjml>',
-    'email_from_address' => 'no-reply@example.com',
+    'email_from_address' => 'no-reply@pushizo.com',
     'disable_email_click_tracking' => true,
     'sms_from' => 'MAGAZA',
     'add_to_inbox' => true,
@@ -340,7 +340,7 @@ $table = [
     'POST /v1/apps/{appId}/live-activities/{activityType}/end' => fn (Client $c) => $c->liveActivities->end('OrderActivity', ['activity_id' => 'order-1']),
     'POST /v1/apps/{appId}/api-keys/{keyId}/rotate' => fn (Client $c) => $c->apiKeys->rotate('key_1'),
     'GET /v1/apps/{appId}/webhooks' => fn (Client $c) => $c->webhooks->list(),
-    'POST /v1/apps/{appId}/webhooks' => fn (Client $c) => $c->webhooks->create(['url' => 'https://example.com/h', 'events' => ['user.created']]),
+    'POST /v1/apps/{appId}/webhooks' => fn (Client $c) => $c->webhooks->create(['url' => 'https://pushizo.com/h', 'events' => ['user.created']]),
     'GET /v1/apps/{appId}/webhooks/{webhookId}' => fn (Client $c) => $c->webhooks->get('wh_1'),
     'PATCH /v1/apps/{appId}/webhooks/{webhookId}' => fn (Client $c) => $c->webhooks->update('wh_1', ['enabled' => false]),
     'DELETE /v1/apps/{appId}/webhooks/{webhookId}' => fn (Client $c) => $c->webhooks->delete('wh_1'),
@@ -358,7 +358,7 @@ $table = [
     'PATCH /v1/apps/{appId}/users/by/{label}/{value}/identity' => fn (Client $c) => $c->users->addAliases('external_id', 'u1', ['crm' => 'c1']),
     'GET /v1/apps/{appId}/users/by/{label}/{value}/export' => fn (Client $c) => $c->users->export('external_id', 'u1'),
     'DELETE /v1/apps/{appId}/users/by/{label}/{value}/identity/{aliasLabel}' => fn (Client $c) => $c->users->removeAlias('external_id', 'u1', 'crm'),
-    'POST /v1/apps/{appId}/users/by/{label}/{value}/subscriptions' => fn (Client $c) => $c->users->addSubscription('external_id', 'u1', ['channel' => 'email', 'token' => 'a@example.com']),
+    'POST /v1/apps/{appId}/users/by/{label}/{value}/subscriptions' => fn (Client $c) => $c->users->addSubscription('external_id', 'u1', ['channel' => 'email', 'token' => 'a@pushizo.com']),
     'GET /v1/apps/{appId}/users/by/{label}/{value}/inbox' => fn (Client $c) => $c->inbox->list('external_id', 'u1'),
     'POST /v1/apps/{appId}/users/by/{label}/{value}/inbox/read-all' => fn (Client $c) => $c->inbox->readAll('external_id', 'u1'),
     'POST /v1/apps/{appId}/users/by/{label}/{value}/inbox/{itemId}/read' => fn (Client $c) => $c->inbox->read('external_id', 'u1', 'inb_1'),
@@ -367,7 +367,7 @@ $table = [
     'PATCH /v1/apps/{appId}/subscriptions/{subscriptionId}' => fn (Client $c) => $c->subscriptions->update('sub_1', ['status' => 'unsubscribed']),
     'DELETE /v1/apps/{appId}/subscriptions/{subscriptionId}' => fn (Client $c) => $c->subscriptions->delete('sub_1'),
     'GET /v1/apps/{appId}/subscriptions/{subscriptionId}/user/identity' => fn (Client $c) => $c->subscriptions->getUserIdentity('sub_1'),
-    'PATCH /v1/apps/{appId}/subscriptions_by_token/{tokenType}/{token}' => fn (Client $c) => $c->subscriptions->updateByToken('email', 'a@example.com', ['status' => 'unsubscribed']),
+    'PATCH /v1/apps/{appId}/subscriptions_by_token/{tokenType}/{token}' => fn (Client $c) => $c->subscriptions->updateByToken('email', 'a@pushizo.com', ['status' => 'unsubscribed']),
     'POST /v1/apps/{appId}/subscriptions/{subscriptionId}/owner' => fn (Client $c) => $c->subscriptions->setOwner('sub_1', 'u1'),
     'POST /v1/apps/{appId}/events' => fn (Client $c) => $c->events->send([['name' => 'purchase', 'external_id' => 'u1']]),
     'GET /v1/apps/{appId}/events/definitions' => fn (Client $c) => $c->events->listDefinitions(),
@@ -441,7 +441,7 @@ $table = [
     'GET /v1/apps/{appId}/users/by/{label}/{value}/preferences' => fn (Client $c) => $c->preferences->getUser('external_id', 'u1'),
     'PUT /v1/apps/{appId}/users/by/{label}/{value}/preferences' => fn (Client $c) => $c->preferences->setUser('external_id', 'u1', [['category' => 'marketing', 'opted_in' => false]]),
     'GET /v1/apps/{appId}/suppressions' => fn (Client $c) => $c->suppressions->list(),
-    'POST /v1/apps/{appId}/suppressions' => fn (Client $c) => $c->suppressions->create(['channel' => 'email', 'value' => 'a@example.com']),
+    'POST /v1/apps/{appId}/suppressions' => fn (Client $c) => $c->suppressions->create(['channel' => 'email', 'value' => 'a@pushizo.com']),
     'DELETE /v1/apps/{appId}/suppressions/{suppressionId}' => fn (Client $c) => $c->suppressions->delete('sup_1'),
     'GET /v1/apps/{appId}/in-app-messages' => fn (Client $c) => $c->inAppMessages->list(),
     'POST /v1/apps/{appId}/in-app-messages' => fn (Client $c) => $c->inAppMessages->create(['name' => 'Banner', 'triggers' => [['kind' => 'session_start']], 'display' => ['layout' => 'modal', 'blocks' => []]]),
@@ -472,7 +472,7 @@ $table = [
     'GET /v1/apps/{appId}/users/by/{label}/{value}/journeys' => fn (Client $c) => $c->journeys->listForUser('external_id', 'u1'),
     // v2: dinamik içerik
     'GET /v1/apps/{appId}/data-feeds' => fn (Client $c) => $c->dataFeeds->list(),
-    'POST /v1/apps/{appId}/data-feeds' => fn (Client $c) => $c->dataFeeds->create(['name' => 'stok', 'url_template' => 'https://example.com/stok/{{ user.external_id }}']),
+    'POST /v1/apps/{appId}/data-feeds' => fn (Client $c) => $c->dataFeeds->create(['name' => 'stok', 'url_template' => 'https://pushizo.com/stok/{{ user.external_id }}']),
     'GET /v1/apps/{appId}/data-feeds/{feedId}' => fn (Client $c) => $c->dataFeeds->get('df_1'),
     'PATCH /v1/apps/{appId}/data-feeds/{feedId}' => fn (Client $c) => $c->dataFeeds->update('df_1', ['enabled' => false]),
     'DELETE /v1/apps/{appId}/data-feeds/{feedId}' => fn (Client $c) => $c->dataFeeds->delete('df_1'),
@@ -510,10 +510,10 @@ $table = [
     'POST /v1/apps/{appId}/whatsapp/templates/sync' => fn (Client $c) => $c->whatsappTemplates->sync(),
     // v2: e-posta teslim edilebilirliği
     'GET /v1/apps/{appId}/email-deliverability' => fn (Client $c) => $c->emailDeliverability->get(),
-    'PUT /v1/apps/{appId}/email-deliverability' => fn (Client $c) => $c->emailDeliverability->update(['bcc_address' => 'arsiv@example.com']),
-    'POST /v1/apps/{appId}/email-deliverability/verify-address' => fn (Client $c) => $c->emailDeliverability->verifyAddress('a@example.com'),
+    'PUT /v1/apps/{appId}/email-deliverability' => fn (Client $c) => $c->emailDeliverability->update(['bcc_address' => 'arsiv@pushizo.com']),
+    'POST /v1/apps/{appId}/email-deliverability/verify-address' => fn (Client $c) => $c->emailDeliverability->verifyAddress('a@pushizo.com'),
     'GET /v1/apps/{appId}/email-deliverability/warmup-plans' => fn (Client $c) => $c->emailDeliverability->listWarmupPlans(),
-    'POST /v1/apps/{appId}/email-deliverability/warmup-plans' => fn (Client $c) => $c->emailDeliverability->createWarmupPlan(['name' => 'Yeni alan', 'kind' => 'domain', 'target' => 'mail.example.com']),
+    'POST /v1/apps/{appId}/email-deliverability/warmup-plans' => fn (Client $c) => $c->emailDeliverability->createWarmupPlan(['name' => 'Yeni alan', 'kind' => 'domain', 'target' => 'mail.pushizo.com']),
     'GET /v1/apps/{appId}/email-deliverability/warmup-plans/{planId}' => fn (Client $c) => $c->emailDeliverability->getWarmupPlan('wup_1'),
     'GET /v1/apps/{appId}/email-deliverability/warmup-plans/{planId}/usage' => fn (Client $c) => $c->emailDeliverability->warmupPlanUsage('wup_1', 7),
     'PATCH /v1/apps/{appId}/email-deliverability/warmup-plans/{planId}' => fn (Client $c) => $c->emailDeliverability->updateWarmupPlan('wup_1', ['status' => 'paused']),
@@ -568,7 +568,7 @@ $table = [
     'POST /v1/apps/{appId}/forms' => fn (Client $c) => $c->forms->create(['name' => 'Bülten', 'fields' => [['id' => 'email', 'type' => 'email', 'label' => ['tr' => 'E-posta'], 'required' => true]]]),
     'GET /v1/apps/{appId}/forms/{formId}' => fn (Client $c) => $c->forms->get('frm_1'),
     'GET /v1/apps/{appId}/forms/{formId}/submissions' => fn (Client $c) => $c->forms->listSubmissions('frm_1', ['status' => 'confirmed', 'limit' => 50]),
-    'POST /v1/apps/{appId}/forms/{formId}/submissions' => fn (Client $c) => $c->forms->submit('frm_1', ['values' => ['email' => 'a@example.com'], 'external_id' => 'u1']),
+    'POST /v1/apps/{appId}/forms/{formId}/submissions' => fn (Client $c) => $c->forms->submit('frm_1', ['values' => ['email' => 'a@pushizo.com'], 'external_id' => 'u1']),
     'GET /v1/apps/{appId}/surveys' => fn (Client $c) => $c->surveys->list(),
     'POST /v1/apps/{appId}/surveys' => fn (Client $c) => $c->surveys->create(['name' => 'NPS', 'questions' => [['id' => 'q1', 'type' => 'nps', 'text' => ['tr' => 'Bizi önerir misiniz?']]]]),
     'GET /v1/apps/{appId}/surveys/{surveyId}' => fn (Client $c) => $c->surveys->get('srv_1'),
@@ -587,6 +587,10 @@ $table = [
     'GET /v1/apps/{appId}/integrations/zapier/samples' => fn (Client $c) => $c->zapier->samples(['event' => 'user.created']),
     'POST /v1/apps/{appId}/mcp/campaign-drafts' => fn (Client $c) => $c->mcp->createCampaignDraft(['name' => 'Taslak']),
     'POST /v1/apps/{appId}/mcp/segment-drafts' => fn (Client $c) => $c->mcp->createSegmentDraft(['name' => 'VIP', 'definition' => $definition]),
+    'POST /v1/apps/{appId}/mcp/template-drafts' => fn (Client $c) => $c->mcp->createTemplateDraft(['name' => 'Şablon', 'content' => ['contents' => ['tr' => 'Merhaba']]]),
+    'POST /v1/apps/{appId}/mcp/journey-drafts' => fn (Client $c) => $c->mcp->createJourneyDraft(['name' => 'Akış']),
+    'POST /v1/apps/{appId}/mcp/in-app-drafts' => fn (Client $c) => $c->mcp->createInAppDraft(['name' => 'Duyuru', 'triggers' => [['kind' => 'session_start']], 'display' => ['layout' => 'modal', 'blocks' => [['type' => 'title', 'text' => ['tr' => 'Yeni']]]]]),
+    'POST /v1/apps/{appId}/mcp/test-sends' => fn (Client $c) => $c->mcp->sendTest(['contents' => ['tr' => 'Test']]),
 ];
 
 $assert(count($specOps) >= 142, 'spec en az 142 public işlem içerir (' . count($specOps) . ')');
@@ -662,8 +666,8 @@ $hs->conversations->list(['channel' => 'whatsapp', 'unread' => true]);
 $assert($t->calls[4]['url'] === 'https://api.test/v1/apps/app_1/conversations?channel=whatsapp&unread=true', 'conversations.list boolean filtre');
 $hs->conversations->markRead('cnv_1', 'app_9');
 $assert($t->calls[5]['method'] === 'POST' && $t->calls[5]['url'] === 'https://api.test/v1/apps/app_9/conversations/cnv_1/read' && $t->calls[5]['body'] === null, 'conversations.markRead gövdesiz POST');
-$hs->emailDeliverability->verifyAddress('ayşe@example.com');
-$assert($t->calls[6]['body'] === '{"address":"ayşe@example.com"}', 'emailDeliverability.verifyAddress gövdesi (UTF-8)');
+$hs->emailDeliverability->verifyAddress('ayşe@pushizo.com');
+$assert($t->calls[6]['body'] === '{"address":"ayşe@pushizo.com"}', 'emailDeliverability.verifyAddress gövdesi (UTF-8)');
 $hs->zapier->samples(['event' => 'event.received', 'event_name' => 'purchase']);
 $assert($t->calls[7]['url'] === 'https://api.test/v1/apps/app_1/integrations/zapier/samples?event=event.received&event_name=purchase', 'zapier.samples sorgusu');
 $hs->warehouseExports->run('wex_1');
@@ -693,8 +697,8 @@ $hs->ads->refreshAccount('ada_1');
 $assert($t->calls[5]['method'] === 'POST' && $t->calls[5]['url'] === 'https://api.test/v1/apps/app_1/ads/accounts/ada_1/refresh' && $t->calls[5]['body'] === null, 'ads.refreshAccount gövdesiz POST');
 $hs->webCampaigns->setStatus('wcm_1', 'paused');
 $assert($t->calls[6]['url'] === 'https://api.test/v1/apps/app_1/web-campaigns/wcm_1/status' && $t->calls[6]['body'] === '{"status":"paused"}', 'webCampaigns.setStatus gövdesi');
-$hs->forms->submit('frm_1', ['values' => ['email' => 'ayşe@example.com', 'consent' => true], 'external_id' => 'u1']);
-$assert($t->calls[7]['body'] === '{"values":{"email":"ayşe@example.com","consent":true},"external_id":"u1"}', 'forms.submit gövdesi (UTF-8)');
+$hs->forms->submit('frm_1', ['values' => ['email' => 'ayşe@pushizo.com', 'consent' => true], 'external_id' => 'u1']);
+$assert($t->calls[7]['body'] === '{"values":{"email":"ayşe@pushizo.com","consent":true},"external_id":"u1"}', 'forms.submit gövdesi (UTF-8)');
 $subIds = [];
 foreach ($hs->paginate(fn (?string $c) => $hs->forms->listSubmissions('frm_1', ['cursor' => $c, 'limit' => 2])) as $sub) {
     $subIds[] = $sub['id'];
@@ -745,14 +749,14 @@ $t = new FakeTransport([
     ['status' => 200, 'body' => '{"id":"imp_1","status":"pending"}'],
 ]);
 $hs = new Client(['api_key' => 'k', 'base_url' => 'https://api.test', 'app_id' => 'app_1', 'transport' => $t, 'sleep' => $noSleep]);
-$import = $hs->imports->create('csv_users', "external_id,email\nu1,a@example.com\n", 'kullanicilar.csv');
+$import = $hs->imports->create('csv_users', "external_id,email\nu1,a@pushizo.com\n", 'kullanicilar.csv');
 $assert($import['id'] === 'imp_1' && count($t->calls) === 2, '429 sonrası yeniden denendi');
 $ct = $t->calls[1]['headers']['Content-Type'] ?? '';
 $assert(preg_match('/^multipart\/form-data; boundary=(\S+)$/', $ct, $bm) === 1, 'multipart Content-Type ve boundary');
 $mp = (string) $t->calls[1]['body'];
 $assert($t->calls[0]['body'] === $mp, 'yeniden denemede aynı gövde');
 $assert(str_contains($mp, "Content-Disposition: form-data; name=\"type\"\r\n\r\ncsv_users\r\n"), 'type alanı');
-$assert(str_contains($mp, "name=\"file\"; filename=\"kullanicilar.csv\"\r\nContent-Type: text/csv\r\n\r\nexternal_id,email\nu1,a@example.com\n\r\n"), 'file alanı');
+$assert(str_contains($mp, "name=\"file\"; filename=\"kullanicilar.csv\"\r\nContent-Type: text/csv\r\n\r\nexternal_id,email\nu1,a@pushizo.com\n\r\n"), 'file alanı');
 $assert(str_ends_with($mp, '--' . ($bm[1] ?? '') . "--\r\n"), 'kapanış sınırı');
 
 echo "paginate" . PHP_EOL;

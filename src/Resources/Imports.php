@@ -21,7 +21,7 @@ final class Imports
     /**
      * CSV içeriğinden import işi başlatır.
      *
-     * @param 'eski sağlayıcı_players'|'csv_users' $type
+     * @param 'legacy_players'|'csv_users' $type
      * @return array<string, mixed>
      */
     public function create(string $type, string $csv, string $filename = 'import.csv', ?string $appId = null): array
@@ -37,7 +37,7 @@ final class Imports
     /**
      * Diskteki CSV dosyasından import işi başlatır.
      *
-     * @param 'eski sağlayıcı_players'|'csv_users' $type
+     * @param 'legacy_players'|'csv_users' $type
      * @return array<string, mixed>
      */
     public function createFromFile(string $type, string $path, ?string $appId = null): array
