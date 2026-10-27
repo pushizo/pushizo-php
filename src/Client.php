@@ -61,6 +61,10 @@ final class Client
     public readonly Resources\DataFeeds $dataFeeds;
     public readonly Resources\ContentTables $contentTables;
     public readonly Resources\WarehouseExports $warehouseExports;
+    /** Depodan içeri aktarım. */
+    public readonly Resources\ReverseEtl $reverseEtl;
+    /** SMS doğrulama kodu. */
+    public readonly Resources\Verify $verify;
     public readonly Resources\Conversations $conversations;
     public readonly Resources\SmsKeywords $smsKeywords;
     public readonly Resources\WhatsAppTemplates $whatsappTemplates;
@@ -125,6 +129,8 @@ final class Client
         $this->dataFeeds = new Resources\DataFeeds($this);
         $this->contentTables = new Resources\ContentTables($this);
         $this->warehouseExports = new Resources\WarehouseExports($this);
+        $this->reverseEtl = new Resources\ReverseEtl($this);
+        $this->verify = new Resources\Verify($this);
         $this->conversations = new Resources\Conversations($this);
         $this->smsKeywords = new Resources\SmsKeywords($this);
         $this->whatsappTemplates = new Resources\WhatsAppTemplates($this);

@@ -102,4 +102,16 @@ final class EmailDeliverability
     {
         return $this->client->request('DELETE', $this->base($appId) . '/warmup-plans/' . rawurlencode($planId));
     }
+
+    /** @return array<string, mixed> */
+    public function postmaster(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/postmaster');
+    }
+
+    /** @return array<string, mixed> */
+    public function syncPostmaster(?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/postmaster/sync');
+    }
 }
