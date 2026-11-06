@@ -105,6 +105,18 @@ Her public API işlemi (`/sdk/v1` hariç) bir SDK metoduna karşılık gelir; e�
 | `forms` | `list`, `create`, `get`, `listSubmissions`, `submit` |
 | `surveys` | `list`, `create`, `get`, `setStatus`, `report`, `listResponses`, `respond` |
 | `landingPages` | `list`, `get`, `publish`, `unpublish` |
+| `rfm` | `getConfig`, `updateConfig`, `compute`, `overview`, `transitions`, `users` |
+| `predictions` | `list`, `create`, `get`, `update`, `delete`, `compute`, `users` |
+| `featureFlags` | `list`, `create`, `evaluate`, `get`, `update`, `delete` |
+| `geofences` | `list`, `create`, `get`, `update`, `delete` |
+| `channelScores` | `getConfig`, `updateConfig`, `compute`, `overview`, `users`, `user` |
+| `globalControl` | `get`, `update`, `reset`, `report` |
+| `savedReports` | `list`, `create`, `get`, `update`, `delete` (çalıştırma: `analytics->runReport`, yol analizi: `analytics->paths`) |
+| `catalogs` | `list`, `create`, `get`, `update`, `delete`, `items`, `upsertItems`, `uploadItems`, `getItem`, `deleteItem` |
+| `recommendations` | `list`, `getConfig`, `updateConfig`, `compute` |
+| `promoCodeLists` | `list`, `create`, `get`, `update`, `delete`, `uploadCodes`, `codes` |
+| `decisionAgents` | `list`, `create`, `get`, `update`, `delete`, `report`, `decide` |
+| `wallet` | `getConfig`, `updateConfig`, `listTemplates`, `createTemplate`, `getTemplate`, `updateTemplate`, `deleteTemplate`, `listPasses`, `issuePass`, `getPass`, `updatePass`, `voidPass` |
 
 Webhook alıcıları için `Pushizo\Webhook::verify()` ve `constructEvents()` kullanılır.
 
