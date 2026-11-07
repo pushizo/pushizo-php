@@ -104,6 +104,16 @@ final class Journeys
     }
 
     /**
+     * Yayınlanmış bir sürümü taslağa geri yükler; yayındaki sürüm değişmez.
+     *
+     * @return array<string, mixed>
+     */
+    public function restoreVersion(string $journeyId, int $version, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->one($journeyId, $appId) . '/versions/' . $version . '/restore');
+    }
+
+    /**
      * Taslağı doğrulayıp yeni sürüm olarak yayınlar.
      *
      * @return array<string, mixed>

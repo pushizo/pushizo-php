@@ -16,7 +16,7 @@ final class Notifications
     /**
      * Bildirim oluşturur (202). `idempotency_key` verilmezse otomatik UUID eklenir.
      *
-     * @param array<string, mixed> $input OneSignal uyumlu gövde: target, headings, contents, url, data, ttl, …;
+     * @param array<string, mixed> $input eski sağlayıcı uyumlu gövde: target, headings, contents, url, data, ttl, …;
      *   e-posta: email_subject, email_body, email_mjml, email_preheader, email_from_name, email_from_address,
      *   email_reply_to_address, disable_email_click_tracking; SMS: sms_from, disable_sms_link_shortening;
      *   bildirim kutusu: add_to_inbox, inbox_ttl (saniye)

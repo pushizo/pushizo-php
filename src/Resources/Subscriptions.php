@@ -50,7 +50,7 @@ final class Subscriptions
     }
 
     /**
-     * Token ile güncelleme. `$tokenType`: ios_push, android_push, web_push, email, sms veya OneSignal
+     * Token ile güncelleme. `$tokenType`: ios_push, android_push, web_push, email, sms veya eski sağlayıcı
      * adları (iOSPush, AndroidPush, ChromePush, FirefoxPush, SafariPush, Email, SMS).
      *
      * @param array{token?:string, device?:array<string,mixed>, status?:string, test_device?:bool} $body

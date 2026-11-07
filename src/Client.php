@@ -21,7 +21,7 @@ use Pushizo\Transport\TransportInterface;
  */
 final class Client
 {
-    public const VERSION = '0.1.0';
+    public const VERSION = '0.2.0';
     private const BACKOFF_MS = [300, 1000, 3000];
     /** Sunucuda tekrarlanması ek yan etki doğurmayan HTTP metotları; 5xx ve ağ hatalarında serbestçe yeniden denenir. */
     private const IDEMPOTENT_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'];
@@ -61,6 +61,10 @@ final class Client
     public readonly Resources\DataFeeds $dataFeeds;
     public readonly Resources\ContentTables $contentTables;
     public readonly Resources\WarehouseExports $warehouseExports;
+    /** Depodan içeri aktarım. */
+    public readonly Resources\ReverseEtl $reverseEtl;
+    /** SMS doğrulama kodu. */
+    public readonly Resources\Verify $verify;
     public readonly Resources\Conversations $conversations;
     public readonly Resources\SmsKeywords $smsKeywords;
     public readonly Resources\WhatsAppTemplates $whatsappTemplates;
@@ -77,6 +81,30 @@ final class Client
     public readonly Resources\Surveys $surveys;
     /** Landing sayfaları: liste, detay, yayınla/yayından kaldır. */
     public readonly Resources\LandingPages $landingPages;
+    /** RFM segmentasyonu. */
+    public readonly Resources\Rfm $rfm;
+    /** Öngörü modelleri. */
+    public readonly Resources\Predictions $predictions;
+    /** Özellik bayrakları ve kademeli yayın. */
+    public readonly Resources\FeatureFlags $featureFlags;
+    /** Bölgeler (geofence). */
+    public readonly Resources\Geofences $geofences;
+    /** Kişi başına en iyi kanal. */
+    public readonly Resources\ChannelScores $channelScores;
+    /** Genel kontrol grubu. */
+    public readonly Resources\GlobalControl $globalControl;
+    /** Kayıtlı raporlar (rapor oluşturucu). */
+    public readonly Resources\SavedReports $savedReports;
+    /** Ürün katalogları. */
+    public readonly Resources\Catalogs $catalogs;
+    /** Ürün önerileri. */
+    public readonly Resources\Recommendations $recommendations;
+    /** Promosyon kodu havuzları. */
+    public readonly Resources\PromoCodeLists $promoCodeLists;
+    /** Karar ajanları. */
+    public readonly Resources\DecisionAgents $decisionAgents;
+    /** Apple ve Google Wallet. */
+    public readonly Resources\Wallet $wallet;
 
     /**
      * @param array{
@@ -125,6 +153,8 @@ final class Client
         $this->dataFeeds = new Resources\DataFeeds($this);
         $this->contentTables = new Resources\ContentTables($this);
         $this->warehouseExports = new Resources\WarehouseExports($this);
+        $this->reverseEtl = new Resources\ReverseEtl($this);
+        $this->verify = new Resources\Verify($this);
         $this->conversations = new Resources\Conversations($this);
         $this->smsKeywords = new Resources\SmsKeywords($this);
         $this->whatsappTemplates = new Resources\WhatsAppTemplates($this);
@@ -136,6 +166,18 @@ final class Client
         $this->forms = new Resources\Forms($this);
         $this->surveys = new Resources\Surveys($this);
         $this->landingPages = new Resources\LandingPages($this);
+        $this->rfm = new Resources\Rfm($this);
+        $this->predictions = new Resources\Predictions($this);
+        $this->featureFlags = new Resources\FeatureFlags($this);
+        $this->geofences = new Resources\Geofences($this);
+        $this->channelScores = new Resources\ChannelScores($this);
+        $this->globalControl = new Resources\GlobalControl($this);
+        $this->savedReports = new Resources\SavedReports($this);
+        $this->catalogs = new Resources\Catalogs($this);
+        $this->recommendations = new Resources\Recommendations($this);
+        $this->promoCodeLists = new Resources\PromoCodeLists($this);
+        $this->decisionAgents = new Resources\DecisionAgents($this);
+        $this->wallet = new Resources\Wallet($this);
     }
 
     /** SDK identity verification: `identity_hash` = HMAC-SHA256(sdk_secret, external_id). */

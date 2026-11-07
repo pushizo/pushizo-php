@@ -13,18 +13,6 @@
 
 **Pushizo PHP SDK** — Server-side SDK for PHP 8.1+ with only ext-curl and ext-json: notifications, users, events, journeys, webhook signature verification and the full public API. Works with Laravel and plain PHP.
 
-> **Status:** Publishing to Packagist is in progress.<br>
-> **Durum:** Packagist yayını hazırlanıyor.
-
-**Install from GitHub until then · O zamana kadar GitHub'dan kurulum:**
-
-```bash
-composer config repositories.pushizo vcs https://github.com/pushizo/pushizo-php
-composer require pushizo/pushizo-php:^0.1.0
-```
-
-**After publication · Yayından sonra:**
-
 ```bash
 composer require pushizo/pushizo-php
 ```
@@ -111,12 +99,24 @@ Her public API işlemi (`/sdk/v1` hariç) bir SDK metoduna karşılık gelir; e�
 | `whatsappTemplates` | `list`, `sync` |
 | `emailDeliverability` | `get`, `update`, `verifyAddress`, `listWarmupPlans`, `createWarmupPlan`, `updateWarmupPlan`, `deleteWarmupPlan` |
 | `zapier` | `me`, `subscribe`, `unsubscribe`, `samples` |
-| `mcp` | `createCampaignDraft`, `createSegmentDraft` |
+| `mcp` | `createCampaignDraft`, `createSegmentDraft`, `createTemplateDraft`, `createJourneyDraft`, `createInAppDraft`, `sendTest` |
 | `ads` | `listAccounts`, `listAudiences`, `createAudience`, `getAudience`, `updateAudience`, `deleteAudience`, `syncAudience`, `listSyncs`, `createLookalike`, `listCampaigns`, `getCampaign`, `updateCampaign`, `refreshAccount`, `spendReport`, `attributionReport`, `ltvReport`, `listCapiConfigs`, `listCapiDeliveries`, `listAlertRules`, `createAlertRule`, `updateAlertRule`, `deleteAlertRule`, `listAlerts` |
 | `webCampaigns` | `list`, `create`, `get`, `update`, `report`, `setStatus` |
 | `forms` | `list`, `create`, `get`, `listSubmissions`, `submit` |
 | `surveys` | `list`, `create`, `get`, `setStatus`, `report`, `listResponses`, `respond` |
 | `landingPages` | `list`, `get`, `publish`, `unpublish` |
+| `rfm` | `getConfig`, `updateConfig`, `compute`, `overview`, `transitions`, `users` |
+| `predictions` | `list`, `create`, `get`, `update`, `delete`, `compute`, `users` |
+| `featureFlags` | `list`, `create`, `evaluate`, `get`, `update`, `delete` |
+| `geofences` | `list`, `create`, `get`, `update`, `delete` |
+| `channelScores` | `getConfig`, `updateConfig`, `compute`, `overview`, `users`, `user` |
+| `globalControl` | `get`, `update`, `reset`, `report` |
+| `savedReports` | `list`, `create`, `get`, `update`, `delete` (çalıştırma: `analytics->runReport`, yol analizi: `analytics->paths`) |
+| `catalogs` | `list`, `create`, `get`, `update`, `delete`, `items`, `upsertItems`, `uploadItems`, `getItem`, `deleteItem` |
+| `recommendations` | `list`, `getConfig`, `updateConfig`, `compute` |
+| `promoCodeLists` | `list`, `create`, `get`, `update`, `delete`, `uploadCodes`, `codes` |
+| `decisionAgents` | `list`, `create`, `get`, `update`, `delete`, `report`, `decide` |
+| `wallet` | `getConfig`, `updateConfig`, `listTemplates`, `createTemplate`, `getTemplate`, `updateTemplate`, `deleteTemplate`, `listPasses`, `issuePass`, `getPass`, `updatePass`, `voidPass` |
 
 Webhook alıcıları için `Pushizo\Webhook::verify()` ve `constructEvents()` kullanılır.
 
@@ -155,7 +155,7 @@ $hs->imports->createFromFile('csv_users', __DIR__ . '/kullanicilar.csv');
 
 // Kullanıcı kutusu ve token ile abonelik güncelleme
 $hs->inbox->readAll('external_id', 'u-1');
-$hs->subscriptions->updateByToken('email', 'ayse@example.com', ['status' => 'unsubscribed']);
+$hs->subscriptions->updateByToken('email', 'ayse@pushizo.com', ['status' => 'unsubscribed']);
 
 // API anahtarı: düz anahtar yalnızca bu yanıtta döner, loglamayın
 $created = $hs->apiKeys->create(['name' => 'ci', 'scopes' => ['notifications:write']]);
@@ -223,7 +223,7 @@ foreach ($hs->paginate(fn (?string $c) => $hs->journeys->listRuns($journey['id']
 
 ```php
 // Data feed ve içerik tablosu (şablonda {{ feed.stok.adet }} ve tablo araması)
-$feed = $hs->dataFeeds->create(['name' => 'stok', 'url_template' => 'https://example.com/stok/{{ user.external_id }}']);
+$feed = $hs->dataFeeds->create(['name' => 'stok', 'url_template' => 'https://pushizo.com/stok/{{ user.external_id }}']);
 $hs->dataFeeds->test($feed['id'], ['external_id' => 'u-1']);
 $table = $hs->contentTables->createFromFile(['name' => 'urunler', 'key_column' => 'sku'], __DIR__ . '/urunler.csv');
 $hs->contentTables->replaceRowsFromFile($table['id'], __DIR__ . '/urunler-yeni.csv'); // sürüm artar
@@ -235,8 +235,8 @@ foreach ($hs->paginate(fn (?string $c) => $hs->conversations->list(['unread' => 
 }
 
 // E-posta adres doğrulama ve ısındırma planı
-$hs->emailDeliverability->verifyAddress('ayse@example.com');
-$hs->emailDeliverability->createWarmupPlan(['name' => 'Yeni alan adı', 'kind' => 'domain', 'target' => 'mail.example.com']);
+$hs->emailDeliverability->verifyAddress('ayse@pushizo.com');
+$hs->emailDeliverability->createWarmupPlan(['name' => 'Yeni alan adı', 'kind' => 'domain', 'target' => 'mail.pushizo.com']);
 
 // Veri ambarı dışa aktarımı: kimlik bilgisi şifreli saklanır, yanıtta dönmez
 $export = $hs->warehouseExports->create([
@@ -260,7 +260,7 @@ $hs->inbox->createCannedResponse(['shortcut' => 'iade', 'title' => 'İade', 'bod
 // Reklam raporlama ve bütçe uyarıları; from/to zorunlu
 $spend = $hs->ads->spendReport(['from' => '2026-10-01', 'to' => '2026-10-31', 'group_by' => 'campaign']);
 $hs->ads->updateCampaign('ade_1', ['status' => 'paused']); // platforma da yazılır
-$hs->ads->createAlertRule(['name' => 'Günlük tavan', 'kind' => 'daily_spend', 'threshold' => 500, 'recipients' => ['pazarlama@example.com']]);
+$hs->ads->createAlertRule(['name' => 'Günlük tavan', 'kind' => 'daily_spend', 'threshold' => 500, 'recipients' => ['pazarlama@pushizo.com']]);
 
 // Web büyüme: kampanya taslak oluşur, setStatus ile yayınlanır
 $popup = $hs->webCampaigns->create([
@@ -269,7 +269,7 @@ $popup = $hs->webCampaigns->create([
     'trigger' => ['kind' => 'exit_intent'],
 ]);
 $hs->webCampaigns->setStatus($popup['id'], 'active');
-$hs->forms->submit('frm_1', ['values' => ['email' => 'ayse@example.com'], 'external_id' => 'u-1']); // sunucu tarafı gönderim
+$hs->forms->submit('frm_1', ['values' => ['email' => 'ayse@pushizo.com'], 'external_id' => 'u-1']); // sunucu tarafı gönderim
 foreach ($hs->paginate(fn (?string $c) => $hs->forms->listSubmissions('frm_1', ['status' => 'confirmed', 'cursor' => $c])) as $s) {
     echo $s['id'], PHP_EOL;
 }

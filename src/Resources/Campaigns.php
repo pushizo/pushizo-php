@@ -74,19 +74,33 @@ final class Campaigns
      * @param array{send_at?:string, recurrence?:array{cron:string, until?:?string, timezone?:string}} $body
      * @return array<string, mixed>
      */
-    public function schedule(string $campaignId, array $body, ?string $appId = null): array
+    public function schedule(string $campaignId, array $body, ?string $appId = null, bool $force = false): array
     {
-        return $this->client->request('POST', $this->one($campaignId, $appId) . '/schedule', [], $body);
+        return $this->client->request('POST', $this->one($campaignId, $appId) . '/schedule', $force ? ['force' => 'true'] : [], $body);
     }
 
     /**
-     * Hemen gönder.
+     * Hemen gönder. E-posta liste koruması (409 `email_invalid_ratio`) yalnızca `admin` kapsamıyla `$force = true`
+     * ile aşılır.
      *
      * @return array<string, mixed>
      */
-    public function send(string $campaignId, ?string $appId = null): array
+    public function send(string $campaignId, ?string $appId = null, bool $force = false): array
     {
+        if ($force) {
+            return $this->client->request('POST', $this->one($campaignId, $appId) . '/send', ['force' => 'true']);
+        }
         return $this->action($campaignId, 'send', $appId);
+    }
+
+    /**
+     * E-posta liste riski: kitlenin denetim dağılımı, tahmini geçersiz oranı ve 7/30 gün bounce oranı.
+     *
+     * @return array<string, mixed>
+     */
+    public function emailRisk(string $campaignId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->one($campaignId, $appId) . '/email-risk');
     }
 
     /** @return array<string, mixed> */

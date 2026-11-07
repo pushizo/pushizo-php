@@ -131,4 +131,34 @@ final class Analytics
         }
         return $this->client->request('POST', $path, [], $body);
     }
+
+    /**
+     * Yol analizi: bir olaydan sonra (`after`) veya önce (`before`) izlenen olay yolları. `format: csv` ile CSV metni döner.
+     *
+     * @param array{event:string, direction?:'after'|'before', depth?:int, top?:int, window_hours?:int, exclude?:list<string>, from?:string, to?:string, format?:'json'|'csv'} $body
+     * @return array<string, mixed>|string
+     */
+    public function paths(array $body, ?string $appId = null): array|string
+    {
+        $path = $this->client->appPath($appId) . '/analytics/paths';
+        if (($body['format'] ?? null) === 'csv') {
+            return $this->client->requestText('POST', $path, [], $body);
+        }
+        return $this->client->request('POST', $path, [], $body);
+    }
+
+    /**
+     * Rapor oluşturucu: kaynak, metrik, kırılım ve filtreyle rapor çalıştırır. `format: csv` ile CSV metni döner.
+     *
+     * @param array{source:'deliveries'|'events'|'conversions', metrics:list<string>, dimensions?:list<string>, filters?:array<string, list<string>>, sort?:array{by:string, direction?:'asc'|'desc'}, limit?:int, days?:int, from?:string, to?:string, format?:'json'|'csv'} $body
+     * @return array<string, mixed>|string
+     */
+    public function runReport(array $body, ?string $appId = null): array|string
+    {
+        $path = $this->client->appPath($appId) . '/analytics/reports/run';
+        if (($body['format'] ?? null) === 'csv') {
+            return $this->client->requestText('POST', $path, [], $body);
+        }
+        return $this->client->request('POST', $path, [], $body);
+    }
 }

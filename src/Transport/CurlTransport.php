@@ -49,12 +49,10 @@ final class CurlTransport implements TransportInterface
             // Zaman aşımı bağlantı kurulmadan (connect_time 0) oluştuysa istek gönderilmemiştir.
             $notSent = in_array($errno, self::NOT_SENT_ERRORS, true)
                 || ($errno === CURLE_OPERATION_TIMEDOUT && (float) curl_getinfo($ch, CURLINFO_CONNECT_TIME) === 0.0);
-            curl_close($ch);
             $message = $error !== '' ? $error : 'ağ hatası';
             throw $notSent ? new ConnectionException($message) : new PushizoException(0, 'NETWORK', $message);
         }
         $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        curl_close($ch);
 
         return ['status' => $status, 'body' => (string) $result, 'headers' => $responseHeaders];
     }

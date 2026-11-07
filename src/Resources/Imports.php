@@ -6,7 +6,7 @@ namespace Pushizo\Resources;
 
 use Pushizo\Client;
 
-/** İçe aktarma işleri (multipart CSV, UTF-8, en fazla 50 MB): OneSignal player dökümü veya kullanıcı CSV'si. */
+/** İçe aktarma işleri (multipart CSV, UTF-8, en fazla 50 MB): eski sağlayıcı player dökümü veya kullanıcı CSV'si. */
 final class Imports
 {
     public function __construct(private readonly Client $client)
@@ -21,7 +21,7 @@ final class Imports
     /**
      * CSV içeriğinden import işi başlatır.
      *
-     * @param 'onesignal_players'|'csv_users' $type
+     * @param 'legacy_players'|'csv_users' $type
      * @return array<string, mixed>
      */
     public function create(string $type, string $csv, string $filename = 'import.csv', ?string $appId = null): array
@@ -37,7 +37,7 @@ final class Imports
     /**
      * Diskteki CSV dosyasından import işi başlatır.
      *
-     * @param 'onesignal_players'|'csv_users' $type
+     * @param 'legacy_players'|'csv_users' $type
      * @return array<string, mixed>
      */
     public function createFromFile(string $type, string $path, ?string $appId = null): array
