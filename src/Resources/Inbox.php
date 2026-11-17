@@ -145,4 +145,89 @@ final class Inbox
     {
         return $this->client->request('GET', $this->client->appPath($appId) . '/inbox/metrics', $params);
     }
+
+    /**
+     * Takım oluşturur; `member_ids` yanıt rolüne sahip org üyeleri olmalıdır.
+     *
+     * @param array{name:string, description?:string|null, member_ids?:list<string>} $input
+     * @return array<string, mixed>
+     */
+    public function createTeam(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->client->appPath($appId) . '/inbox/teams', [], $input);
+    }
+
+    /**
+     * Takımı günceller.
+     *
+     * @param array{name?:string, description?:string|null, member_ids?:list<string>} $input
+     * @return array<string, mixed>
+     */
+    public function updateTeam(string $teamId, array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PATCH', $this->client->appPath($appId) . '/inbox/teams/' . rawurlencode($teamId), [], $input);
+    }
+
+    /**
+     * Takımı siler; konuşmaların takım ataması kalkar.
+     *
+     * @return array<string, mixed>
+     */
+    public function deleteTeam(string $teamId, ?string $appId = null): array
+    {
+        return $this->client->request('DELETE', $this->client->appPath($appId) . '/inbox/teams/' . rawurlencode($teamId));
+    }
+
+    /**
+     * Atama kuralları (sırayla değerlendirilir).
+     *
+     * @return array<string, mixed>
+     */
+    public function listAssignmentRules(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/inbox/assignment-rules');
+    }
+
+    /**
+     * Atama kuralı: kanal/dil/etiket koşulu; round-robin, en az yük veya yalnızca takım (`team_id` veya `agent_ids` gerekli).
+     *
+     * @param array{name:string, enabled?:bool, position?:int, conditions?:array<string, mixed>, strategy?:'round_robin'|'least_busy'|'team_only', team_id?:string|null, agent_ids?:list<string>} $input
+     * @return array<string, mixed>
+     */
+    public function createAssignmentRule(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->client->appPath($appId) . '/inbox/assignment-rules', [], $input);
+    }
+
+    /**
+     * Atama kuralını günceller (sıra dahil).
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    public function updateAssignmentRule(string $ruleId, array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PATCH', $this->client->appPath($appId) . '/inbox/assignment-rules/' . rawurlencode($ruleId), [], $input);
+    }
+
+    /**
+     * Atama kuralını siler.
+     *
+     * @return array<string, mixed>
+     */
+    public function deleteAssignmentRule(string $ruleId, ?string $appId = null): array
+    {
+        return $this->client->request('DELETE', $this->client->appPath($appId) . '/inbox/assignment-rules/' . rawurlencode($ruleId));
+    }
+
+    /**
+     * Temsilci yönlendirme profili: eşzamanlı konuşma sınırı ve diller.
+     *
+     * @param array{max_concurrent?:int|null, languages?:list<string>} $input
+     * @return array<string, mixed>
+     */
+    public function updateAgent(string $accountId, array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PATCH', $this->client->appPath($appId) . '/inbox/agents/' . rawurlencode($accountId), [], $input);
+    }
 }

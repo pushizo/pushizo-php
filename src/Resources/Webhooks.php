@@ -104,4 +104,35 @@ final class Webhooks
     {
         return $this->client->request('POST', $this->base($appId) . '/deliveries/' . rawurlencode($deliveryId) . '/replay');
     }
+
+    /**
+     * Abone olunabilecek olay türleri.
+     *
+     * @return array<string, mixed>
+     */
+    public function eventTypes(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/event-types');
+    }
+
+    /**
+     * Teslim detayı (gövde dahil).
+     *
+     * @return array<string, mixed>
+     */
+    public function getDelivery(string $deliveryId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/deliveries/' . rawurlencode($deliveryId));
+    }
+
+    /**
+     * Başarısız/ölü teslimleri toplu yeniden gönderir (en fazla 1000).
+     *
+     * @param array{status?:'failed'|'dead'|'failed_or_dead', from?:string, to?:string} $input
+     * @return array<string, mixed>
+     */
+    public function replayFailed(string $webhookId, array $input = [], ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($webhookId) . '/replay', [], $input === [] ? new \stdClass() : $input);
+    }
 }

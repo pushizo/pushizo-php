@@ -50,4 +50,24 @@ final class Channels
     {
         return $this->client->request('POST', $this->client->appPath($appId) . '/messenger-links', [], $input);
     }
+
+    /**
+     * Kanal özeti: yalnız sağlayıcı ve durum (`users:read`).
+     *
+     * @return array<string, mixed>
+     */
+    public function status(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/status');
+    }
+
+    /**
+     * E-posta gönderici alan adının SPF/DKIM/DMARC kayıtlarını doğrular.
+     *
+     * @return array<string, mixed>
+     */
+    public function verifyEmailDns(?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/email/verify-dns');
+    }
 }

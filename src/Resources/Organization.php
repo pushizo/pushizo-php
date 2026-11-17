@@ -44,4 +44,15 @@ final class Organization
     {
         return $this->client->request('GET', '/v1/organization/usage', $params);
     }
+
+    /**
+     * Public API istek logları (son 7 gün).
+     *
+     * @param array{limit?:int, cursor?:string, app_id?:string, status_class?:'2xx'|'4xx'|'5xx', method?:string} $params
+     * @return array<string, mixed>
+     */
+    public function logs(array $params = []): array
+    {
+        return $this->client->request('GET', '/v1/organization/logs', $params);
+    }
 }

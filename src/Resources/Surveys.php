@@ -108,4 +108,15 @@ final class Surveys
     {
         return $this->client->request('DELETE', $this->base($appId) . '/' . rawurlencode($surveyId));
     }
+
+    /**
+     * Anketi HTML in-app mesajına dönüştürür (oluştur/güncelle); `publish: true` ile hemen yayınlar (anket aktif olmalı).
+     *
+     * @param array{triggers?:list<array<string, mixed>>, audience?:array<string, mixed>, frequency?:array<string, mixed>, layout?:'modal'|'banner_bottom'|'fullscreen', publish?:bool} $input
+     * @return array<string, mixed>
+     */
+    public function distributeInApp(string $surveyId, array $input = [], ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($surveyId) . '/distribute/in-app', [], $input === [] ? new \stdClass() : $input);
+    }
 }

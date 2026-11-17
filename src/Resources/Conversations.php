@@ -117,4 +117,14 @@ final class Conversations
     {
         return $this->client->request('GET', $this->base($appId) . '/' . rawurlencode($conversationId) . '/activity');
     }
+
+    /**
+     * Kişi profili: özellikler, etiketler, abonelikler (maskeli), son olaylar ve diğer konuşmalar.
+     *
+     * @return array<string, mixed>
+     */
+    public function contact(string $conversationId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/' . rawurlencode($conversationId) . '/contact');
+    }
 }

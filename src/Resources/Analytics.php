@@ -183,4 +183,14 @@ final class Analytics
         }
         return $this->client->request('POST', $path, [], $body);
     }
+
+    /**
+     * Son 14 gün oturum hacmi ve tekil kullanıcı (günlük toplamlar).
+     *
+     * @return array<string, mixed>
+     */
+    public function sessions(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/analytics/sessions');
+    }
 }
