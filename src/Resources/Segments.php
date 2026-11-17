@@ -87,4 +87,14 @@ final class Segments
     {
         return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($segmentId) . '/estimate', ['force' => $force]);
     }
+
+    /**
+     * Statik segmentin üyeliklerini yeniden hesaplar (dinamik segmentte 400).
+     *
+     * @return array<string, mixed>
+     */
+    public function refresh(string $segmentId, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($segmentId) . '/refresh');
+    }
 }

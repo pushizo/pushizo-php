@@ -317,6 +317,22 @@ $definition = ['all' => [['field' => 'tag:vip', 'op' => 'eq', 'value' => 'true']
 /** @var array<string, callable(Client):mixed> $table */
 $table = [
     'GET /v1/organization' => fn (Client $c) => $c->organization->get(),
+    'POST /v1/apps/{appId}/segments/{segmentId}/refresh' => fn (Client $c) => $c->segments->refresh('seg_1'),
+    'POST /v1/apps/{appId}/templates/{templateId}/versions/{version}/revert' => fn (Client $c) => $c->templates->revert('tpl_1', 1),
+    'POST /v1/apps/{appId}/web-campaigns/{campaignId}/winner' => fn (Client $c) => $c->webCampaigns->selectWinner('wcm_1', 'b'),
+    'DELETE /v1/apps/{appId}/web-campaigns/{campaignId}' => fn (Client $c) => $c->webCampaigns->delete('wcm_1'),
+    'POST /v1/apps/{appId}/web-personalizations/{personalizationId}/winner' => fn (Client $c) => $c->webPersonalizations->selectWinner('wpz_1', 'b'),
+    'DELETE /v1/apps/{appId}/web-personalizations/{personalizationId}' => fn (Client $c) => $c->webPersonalizations->delete('wpz_1'),
+    'PATCH /v1/apps/{appId}/forms/{formId}' => fn (Client $c) => $c->forms->update('frm_1', ['name' => 'Bülten v2']),
+    'DELETE /v1/apps/{appId}/forms/{formId}' => fn (Client $c) => $c->forms->delete('frm_1'),
+    'PATCH /v1/apps/{appId}/surveys/{surveyId}' => fn (Client $c) => $c->surveys->update('srv_1', ['name' => 'NPS v2']),
+    'DELETE /v1/apps/{appId}/surveys/{surveyId}' => fn (Client $c) => $c->surveys->delete('srv_1'),
+    'POST /v1/apps/{appId}/landing-pages' => fn (Client $c) => $c->landingPages->create(['name' => 'Kış kampanyası', 'slug' => 'kis-kampanyasi', 'document' => ['version' => 1, 'sections' => []]]),
+    'PATCH /v1/apps/{appId}/landing-pages/{pageId}' => fn (Client $c) => $c->landingPages->update('lp_1', ['name' => 'Bahar kampanyası']),
+    'POST /v1/apps/{appId}/landing-pages/{pageId}/archive' => fn (Client $c) => $c->landingPages->archive('lp_1'),
+    'GET /v1/apps/{appId}/landing-pages/{pageId}/versions' => fn (Client $c) => $c->landingPages->versions('lp_1'),
+    'POST /v1/apps/{appId}/landing-pages/{pageId}/versions/{version}/restore' => fn (Client $c) => $c->landingPages->restoreVersion('lp_1', 1),
+    'DELETE /v1/apps/{appId}/landing-pages/{pageId}' => fn (Client $c) => $c->landingPages->delete('lp_1'),
     'GET /v1/organization/members' => fn (Client $c) => $c->organization->members(),
     'GET /v1/organization/audit-logs' => fn (Client $c) => $c->organization->auditLogs(['action' => 'app.update']),
     'GET /v1/organization/usage' => fn (Client $c) => $c->organization->usage(['days' => 30]),
@@ -688,6 +704,101 @@ $table = [
     'POST /v1/apps/{appId}/mcp/journey-drafts' => fn (Client $c) => $c->mcp->createJourneyDraft(['name' => 'Akış']),
     'POST /v1/apps/{appId}/mcp/in-app-drafts' => fn (Client $c) => $c->mcp->createInAppDraft(['name' => 'Duyuru', 'triggers' => [['kind' => 'session_start']], 'display' => ['layout' => 'modal', 'blocks' => [['type' => 'title', 'text' => ['tr' => 'Yeni']]]]]),
     'POST /v1/apps/{appId}/mcp/test-sends' => fn (Client $c) => $c->mcp->sendTest(['contents' => ['tr' => 'Test']]),
+    'POST /v1/apps/{appId}/mcp/web-campaign-drafts' => fn (Client $c) => $c->mcp->createWebCampaignDraft(['name' => 'Bülten', 'display' => ['layout' => 'popup', 'blocks' => [['type' => 'title', 'text' => ['tr' => 'Bülten']]]], 'trigger' => ['kind' => 'page_load']]),
+    'POST /v1/apps/{appId}/mcp/web-personalization-drafts' => fn (Client $c) => $c->mcp->createWebPersonalizationDraft(['name' => 'Başlık', 'changes' => [['action' => 'text', 'selector' => 'h1', 'text' => ['tr' => 'Merhaba']]]]),
+    'POST /v1/apps/{appId}/mcp/survey-drafts' => fn (Client $c) => $c->mcp->createSurveyDraft(['name' => 'NPS', 'questions' => [['id' => 'nps', 'type' => 'nps', 'text' => ['tr' => 'Bizi tavsiye eder misiniz?']]]]),
+    'POST /v1/apps/{appId}/mcp/landing-page-drafts' => fn (Client $c) => $c->mcp->createLandingPageDraft(['name' => 'Kış kampanyası', 'slug' => 'kis-kampanyasi', 'document' => ['version' => 1, 'sections' => []]]),
+    // Site araması, ambar/SQL segmentleri, kişiselleştirme, ilgi, şirketler, AI ajanları ve veri boru hattı
+    'POST /v1/apps/{appId}/messenger-links' => fn (Client $c) => $c->channels->createMessengerLink(['channel' => 'telegram', 'external_id' => 'musteri-42']),
+    'GET /v1/apps/{appId}/analytics/uninstalls' => fn (Client $c) => $c->analytics->uninstalls(),
+    'GET /v1/apps/{appId}/analytics/android-delivery' => fn (Client $c) => $c->analytics->androidDelivery(),
+    'POST /v1/apps/{appId}/campaigns/{campaignId}/preflight' => fn (Client $c) => $c->campaigns->preflight('cmp_1', null, true),
+    'GET /v1/apps/{appId}/affinity/config' => fn (Client $c) => $c->affinity->getConfig(),
+    'PUT /v1/apps/{appId}/affinity/config' => fn (Client $c) => $c->affinity->updateConfig(['enabled' => true, 'attributes' => ['category'], 'events' => ['purchase' => 2]]),
+    'POST /v1/apps/{appId}/affinity/compute' => fn (Client $c) => $c->affinity->compute(),
+    'GET /v1/apps/{appId}/affinity/overview' => fn (Client $c) => $c->affinity->overview(),
+    'GET /v1/apps/{appId}/affinity/users/{userId}' => fn (Client $c) => $c->affinity->user('usr_1'),
+    'GET /v1/apps/{appId}/sql/schema' => fn (Client $c) => $c->sqlSegments->schema(),
+    'POST /v1/apps/{appId}/sql/query' => fn (Client $c) => $c->sqlSegments->query(['query' => 'select user_id from users', 'row_limit' => 10]),
+    'GET /v1/apps/{appId}/sql/runs' => fn (Client $c) => $c->sqlSegments->runs(['status' => 'rejected']),
+    'GET /v1/apps/{appId}/sql/segments' => fn (Client $c) => $c->sqlSegments->listSegments(),
+    'POST /v1/apps/{appId}/sql/segments' => fn (Client $c) => $c->sqlSegments->createSegment(['name' => 'Altın', 'query' => 'select user_id from users', 'refresh_interval_minutes' => 60]),
+    'PATCH /v1/apps/{appId}/sql/segments/{segmentId}' => fn (Client $c) => $c->sqlSegments->updateSegment('seg_1', ['refresh_interval_minutes' => null]),
+    'POST /v1/apps/{appId}/sql/segments/{segmentId}/refresh' => fn (Client $c) => $c->sqlSegments->refreshSegment('seg_1'),
+    'GET /v1/apps/{appId}/companies' => fn (Client $c) => $c->companies->list(['q' => 'acme']),
+    'POST /v1/apps/{appId}/companies' => fn (Client $c) => $c->companies->upsert(['external_id' => 'acme', 'name' => 'Acme', 'properties' => ['plan' => 'pro']]),
+    'POST /v1/apps/{appId}/companies/batch' => fn (Client $c) => $c->companies->batchUpsert(['companies' => [['external_id' => 'acme']]]),
+    'GET /v1/apps/{appId}/companies/{companyId}' => fn (Client $c) => $c->companies->get('cpy_1'),
+    'PATCH /v1/apps/{appId}/companies/{companyId}' => fn (Client $c) => $c->companies->update('cpy_1', ['name' => 'Acme A.Ş.']),
+    'DELETE /v1/apps/{appId}/companies/{companyId}' => fn (Client $c) => $c->companies->delete('cpy_1'),
+    'GET /v1/apps/{appId}/companies/{companyId}/members' => fn (Client $c) => $c->companies->members('cpy_1', ['role' => 'admin']),
+    'POST /v1/apps/{appId}/companies/{companyId}/members/batch' => fn (Client $c) => $c->companies->batchMembers('cpy_1', ['members' => [['external_id' => 'ayse', 'role' => 'admin']]]),
+    'PUT /v1/apps/{appId}/companies/{companyId}/members/{userId}' => fn (Client $c) => $c->companies->setMember('cpy_1', 'usr_1', ['role' => 'billing']),
+    'DELETE /v1/apps/{appId}/companies/{companyId}/members/{userId}' => fn (Client $c) => $c->companies->removeMember('cpy_1', 'usr_1'),
+    'GET /v1/apps/{appId}/users/{userId}/companies' => fn (Client $c) => $c->companies->forUser('usr_1'),
+    'GET /v1/apps/{appId}/users/by/{label}/{value}/companies' => fn (Client $c) => $c->companies->forUserBy('external_id', 'ayse'),
+    'GET /v1/apps/{appId}/warehouse-segments/options' => fn (Client $c) => $c->warehouseSegments->options(),
+    'GET /v1/apps/{appId}/warehouse-segments/connections' => fn (Client $c) => $c->warehouseSegments->listConnections(),
+    'POST /v1/apps/{appId}/warehouse-segments/connections' => fn (Client $c) => $c->warehouseSegments->createConnection(['name' => 'Databricks', 'type' => 'databricks', 'config' => ['host' => 'adb-1.azuredatabricks.net', 'warehouse_id' => 'abc123def456'], 'credentials' => ['access_token' => 'dapi_x']]),
+    'GET /v1/apps/{appId}/warehouse-segments/connections/{connectionId}' => fn (Client $c) => $c->warehouseSegments->getConnection('whc_1'),
+    'PATCH /v1/apps/{appId}/warehouse-segments/connections/{connectionId}' => fn (Client $c) => $c->warehouseSegments->updateConnection('whc_1', ['name' => 'Yeni']),
+    'DELETE /v1/apps/{appId}/warehouse-segments/connections/{connectionId}' => fn (Client $c) => $c->warehouseSegments->deleteConnection('whc_1'),
+    'POST /v1/apps/{appId}/warehouse-segments/connections/{connectionId}/test' => fn (Client $c) => $c->warehouseSegments->testConnection('whc_1'),
+    'POST /v1/apps/{appId}/warehouse-segments/preview' => fn (Client $c) => $c->warehouseSegments->preview(['connection_id' => 'whc_1', 'query' => 'select id from t', 'id_column' => 'id', 'mode' => 'dry_run']),
+    'GET /v1/apps/{appId}/warehouse-segments/segments' => fn (Client $c) => $c->warehouseSegments->listSegments(),
+    'POST /v1/apps/{appId}/warehouse-segments/segments' => fn (Client $c) => $c->warehouseSegments->createSegment(['name' => 'VIP', 'connection_id' => 'whc_1', 'query' => 'select id from t', 'id_column' => 'id']),
+    'PATCH /v1/apps/{appId}/warehouse-segments/segments/{segmentId}' => fn (Client $c) => $c->warehouseSegments->updateSegment('seg_1', ['refresh_interval_minutes' => 1440]),
+    'POST /v1/apps/{appId}/warehouse-segments/segments/{segmentId}/refresh' => fn (Client $c) => $c->warehouseSegments->refreshSegment('seg_1'),
+    'GET /v1/apps/{appId}/warehouse-segments/runs' => fn (Client $c) => $c->warehouseSegments->runs(['status' => 'failed']),
+    'GET /v1/apps/{appId}/ai-agents' => fn (Client $c) => $c->aiAgents->list(),
+    'POST /v1/apps/{appId}/ai-agents' => fn (Client $c) => $c->aiAgents->create(['name' => 'Destek', 'channels' => ['sms']]),
+    'GET /v1/apps/{appId}/ai-agents/runs' => fn (Client $c) => $c->aiAgents->runs(['limit' => 10]),
+    'GET /v1/apps/{appId}/ai-agents/{agentId}' => fn (Client $c) => $c->aiAgents->get('aia_1'),
+    'PATCH /v1/apps/{appId}/ai-agents/{agentId}' => fn (Client $c) => $c->aiAgents->update('aia_1', ['enabled' => true]),
+    'DELETE /v1/apps/{appId}/ai-agents/{agentId}' => fn (Client $c) => $c->aiAgents->delete('aia_1'),
+    'POST /v1/apps/{appId}/ai-agents/{agentId}/rotate-secret' => fn (Client $c) => $c->aiAgents->rotateSecret('aia_1'),
+    'GET /v1/apps/{appId}/ai-agents/{agentId}/metrics' => fn (Client $c) => $c->aiAgents->metrics('aia_1'),
+    'GET /v1/apps/{appId}/custom-agents' => fn (Client $c) => $c->customAgents->list(),
+    'POST /v1/apps/{appId}/custom-agents' => fn (Client $c) => $c->customAgents->create(['name' => 'Analist', 'tools' => ['list_segments']]),
+    'GET /v1/apps/{appId}/custom-agents/runs' => fn (Client $c) => $c->customAgents->runs(['limit' => 10]),
+    'GET /v1/apps/{appId}/custom-agents/drafts' => fn (Client $c) => $c->customAgents->drafts(['status' => 'pending']),
+    'GET /v1/apps/{appId}/custom-agents/{agentId}' => fn (Client $c) => $c->customAgents->get('cag_1'),
+    'PATCH /v1/apps/{appId}/custom-agents/{agentId}' => fn (Client $c) => $c->customAgents->update('cag_1', ['enabled' => true]),
+    'DELETE /v1/apps/{appId}/custom-agents/{agentId}' => fn (Client $c) => $c->customAgents->delete('cag_1'),
+    'POST /v1/apps/{appId}/custom-agents/{agentId}/run' => fn (Client $c) => $c->customAgents->run('cag_1'),
+    'GET /v1/apps/{appId}/site-search' => fn (Client $c) => $c->siteSearch->get(),
+    'PATCH /v1/apps/{appId}/site-search/settings' => fn (Client $c) => $c->siteSearch->updateSettings(['enabled' => true, 'ai_answers' => true]),
+    'GET /v1/apps/{appId}/site-search/sources' => fn (Client $c) => $c->siteSearch->listSources(),
+    'POST /v1/apps/{appId}/site-search/sources' => fn (Client $c) => $c->siteSearch->createSource(['name' => 'Site', 'kind' => 'sitemap', 'url' => 'https://www.example.com/sitemap.xml']),
+    'PATCH /v1/apps/{appId}/site-search/sources/{sourceId}' => fn (Client $c) => $c->siteSearch->updateSource('ssrc_1', ['refresh_hours' => 12]),
+    'DELETE /v1/apps/{appId}/site-search/sources/{sourceId}' => fn (Client $c) => $c->siteSearch->deleteSource('ssrc_1'),
+    'POST /v1/apps/{appId}/site-search/sources/{sourceId}/crawl' => fn (Client $c) => $c->siteSearch->crawlSource('ssrc_1'),
+    'GET /v1/apps/{appId}/site-search/documents' => fn (Client $c) => $c->siteSearch->listDocuments(['source_id' => 'api']),
+    'PUT /v1/apps/{appId}/site-search/documents/{documentKey}' => fn (Client $c) => $c->siteSearch->putDocument('kargo', ['url' => 'https://www.example.com/kargo', 'content' => 'Kargo ücretsiz.']),
+    'DELETE /v1/apps/{appId}/site-search/documents/{documentKey}' => fn (Client $c) => $c->siteSearch->deleteDocument('kargo'),
+    'GET /v1/apps/{appId}/site-search/report' => fn (Client $c) => $c->siteSearch->report(['days' => 7]),
+    'GET /v1/apps/{appId}/data-pipelines/transforms' => fn (Client $c) => $c->dataPipelines->listTransforms(['target' => 'event']),
+    'POST /v1/apps/{appId}/data-pipelines/transforms' => fn (Client $c) => $c->dataPipelines->createTransform(['name' => 'Fiyat', 'target' => 'event', 'kind' => 'rules', 'rules' => [['op' => 'cast', 'path' => 'properties.price', 'to' => 'number']]]),
+    'POST /v1/apps/{appId}/data-pipelines/transforms/preview' => fn (Client $c) => $c->dataPipelines->previewTransform(['target' => 'event', 'records' => [['name' => 'checkout', 'properties' => new \stdClass()]]]),
+    'GET /v1/apps/{appId}/data-pipelines/transforms/{transformId}' => fn (Client $c) => $c->dataPipelines->getTransform('dtf_1'),
+    'PATCH /v1/apps/{appId}/data-pipelines/transforms/{transformId}' => fn (Client $c) => $c->dataPipelines->updateTransform('dtf_1', ['enabled' => false]),
+    'DELETE /v1/apps/{appId}/data-pipelines/transforms/{transformId}' => fn (Client $c) => $c->dataPipelines->deleteTransform('dtf_1'),
+    'GET /v1/apps/{appId}/data-pipelines/sources' => fn (Client $c) => $c->dataPipelines->listSources(),
+    'POST /v1/apps/{appId}/data-pipelines/sources' => fn (Client $c) => $c->dataPipelines->createSource(['name' => 'Mağaza', 'kind' => 'webhook', 'target' => 'event']),
+    'GET /v1/apps/{appId}/data-pipelines/sources/{sourceId}' => fn (Client $c) => $c->dataPipelines->getSource('dsrc_1'),
+    'PATCH /v1/apps/{appId}/data-pipelines/sources/{sourceId}' => fn (Client $c) => $c->dataPipelines->updateSource('dsrc_1', ['enabled' => false]),
+    'DELETE /v1/apps/{appId}/data-pipelines/sources/{sourceId}' => fn (Client $c) => $c->dataPipelines->deleteSource('dsrc_1'),
+    'POST /v1/apps/{appId}/data-pipelines/sources/{sourceId}/rotate-secret' => fn (Client $c) => $c->dataPipelines->rotateSourceSecret('dsrc_1'),
+    'POST /v1/apps/{appId}/data-pipelines/sources/{sourceId}/run' => fn (Client $c) => $c->dataPipelines->runSource('dsrc_1'),
+    'GET /v1/apps/{appId}/data-pipelines/quarantine' => fn (Client $c) => $c->dataPipelines->listQuarantine(['status' => 'pending']),
+    'POST /v1/apps/{appId}/data-pipelines/quarantine/reprocess' => fn (Client $c) => $c->dataPipelines->reprocessQuarantine(['ids' => ['dqr_1']]),
+    'POST /v1/apps/{appId}/data-pipelines/quarantine/discard' => fn (Client $c) => $c->dataPipelines->discardQuarantine(['ids' => ['dqr_1']]),
+    'GET /v1/apps/{appId}/web-personalizations' => fn (Client $c) => $c->webPersonalizations->list(['status' => 'active']),
+    'POST /v1/apps/{appId}/web-personalizations' => fn (Client $c) => $c->webPersonalizations->create(['name' => 'Başlık', 'changes' => [['action' => 'text', 'selector' => 'h1', 'text' => ['tr' => 'Merhaba']]]]),
+    'GET /v1/apps/{appId}/web-personalizations/{personalizationId}' => fn (Client $c) => $c->webPersonalizations->get('wpz_1'),
+    'PATCH /v1/apps/{appId}/web-personalizations/{personalizationId}' => fn (Client $c) => $c->webPersonalizations->update('wpz_1', ['priority' => 5]),
+    'GET /v1/apps/{appId}/web-personalizations/{personalizationId}/report' => fn (Client $c) => $c->webPersonalizations->report('wpz_1', ['days' => 7]),
+    'POST /v1/apps/{appId}/web-personalizations/{personalizationId}/status' => fn (Client $c) => $c->webPersonalizations->setStatus('wpz_1', 'active'),
 ];
 
 $assert(count($specOps) >= 142, 'spec en az 142 public işlem içerir (' . count($specOps) . ')');
@@ -839,6 +950,47 @@ $t = new FakeTransport([['status' => 200, 'body' => "date,sent\n2026-10-01,5\n",
 $hs = new Client(['api_key' => 'k', 'base_url' => 'https://api.test', 'app_id' => 'app_1', 'transport' => $t, 'sleep' => $noSleep]);
 $csv = $hs->analytics->events(['format' => 'csv']);
 $assert($csv === "date,sent\n2026-10-01,5\n" && str_contains($t->calls[0]['url'], 'format=csv'), 'analytics format=csv metin döner');
+
+echo "Parite kaynakları: istek şekilleri" . PHP_EOL;
+$t = new FakeTransport(array_fill(0, 20, ['status' => 200, 'body' => '{"id":"x"}']));
+$hs = new Client(['api_key' => 'k', 'base_url' => 'https://api.test', 'app_id' => 'app_1', 'transport' => $t, 'sleep' => $noSleep]);
+$hs->siteSearch->putDocument('sss/kargo', ['url' => 'https://www.example.com/kargo', 'content' => 'Kargo ücretsiz.']);
+$assert($t->calls[0]['method'] === 'PUT' && $t->calls[0]['url'] === 'https://api.test/v1/apps/app_1/site-search/documents/sss%2Fkargo' && $t->calls[0]['body'] === '{"url":"https://www.example.com/kargo","content":"Kargo ücretsiz."}', 'siteSearch.putDocument PUT gövdesi ve kodlanmış anahtar');
+$hs->siteSearch->listDocuments(['source_id' => 'api', 'limit' => 5]);
+$assert($t->calls[1]['url'] === 'https://api.test/v1/apps/app_1/site-search/documents?source_id=api&limit=5', 'siteSearch.listDocuments sorgu parametreleri');
+$hs->companies->setMember('cpy_1', 'usr_1', ['role' => 'billing']);
+$assert($t->calls[2]['method'] === 'PUT' && $t->calls[2]['url'] === 'https://api.test/v1/apps/app_1/companies/cpy_1/members/usr_1' && $t->calls[2]['body'] === '{"role":"billing"}', 'companies.setMember rol gövdesi');
+$hs->companies->setMember('cpy_1', 'usr_1');
+$assert($t->calls[3]['body'] === '{}', 'companies.setMember boş gövde JSON nesnesi');
+$hs->companies->forUserBy('external_id', 'ayşe/1');
+$assert($t->calls[4]['url'] === 'https://api.test/v1/apps/app_1/users/by/external_id/ay%C5%9Fe%2F1/companies', 'companies.forUserBy kodlanmış değer');
+$hs->sqlSegments->query(['query' => 'select user_id from users', 'row_limit' => 10]);
+$assert($t->calls[5]['method'] === 'POST' && $t->calls[5]['url'] === 'https://api.test/v1/apps/app_1/sql/query' && $t->calls[5]['body'] === '{"query":"select user_id from users","row_limit":10}', 'sqlSegments.query gövdesi');
+$hs->sqlSegments->refreshSegment('seg_1');
+$assert($t->calls[6]['url'] === 'https://api.test/v1/apps/app_1/sql/segments/seg_1/refresh' && $t->calls[6]['body'] === null, 'sqlSegments.refreshSegment gövdesiz POST');
+$hs->dataPipelines->reprocessQuarantine(['ids' => ['dqr_1', 'dqr_2']]);
+$assert($t->calls[7]['url'] === 'https://api.test/v1/apps/app_1/data-pipelines/quarantine/reprocess' && $t->calls[7]['body'] === '{"ids":["dqr_1","dqr_2"]}', 'dataPipelines.reprocessQuarantine ids gövdesi');
+$hs->dataPipelines->reprocessQuarantine();
+$assert($t->calls[8]['body'] === '{}', 'dataPipelines.reprocessQuarantine kimliksiz boş JSON nesnesi');
+$hs->dataPipelines->discardQuarantine(['ids' => ['dqr_1']]);
+$assert($t->calls[9]['url'] === 'https://api.test/v1/apps/app_1/data-pipelines/quarantine/discard' && $t->calls[9]['body'] === '{"ids":["dqr_1"]}', 'dataPipelines.discardQuarantine gövdesi');
+$hs->analytics->androidDelivery(['from' => '2026-10-01', 'to' => '2026-10-31', 'compare' => true]);
+$assert($t->calls[10]['method'] === 'GET' && $t->calls[10]['url'] === 'https://api.test/v1/apps/app_1/analytics/android-delivery?from=2026-10-01&to=2026-10-31&compare=true', 'analytics.androidDelivery sorgu parametreleri');
+$hs->campaigns->preflight('cmp_1', null, true);
+$assert($t->calls[11]['method'] === 'POST' && $t->calls[11]['url'] === 'https://api.test/v1/apps/app_1/campaigns/cmp_1/preflight?check_links=true' && $t->calls[11]['body'] === null, 'campaigns.preflight check_links=true');
+$hs->campaigns->preflight('cmp_1');
+$assert($t->calls[12]['url'] === 'https://api.test/v1/apps/app_1/campaigns/cmp_1/preflight', 'campaigns.preflight varsayılan sorgusuz');
+$hs->webPersonalizations->setStatus('wpz_1', 'active', 'app_9');
+$assert($t->calls[13]['url'] === 'https://api.test/v1/apps/app_9/web-personalizations/wpz_1/status' && $t->calls[13]['body'] === '{"status":"active"}', 'webPersonalizations.setStatus gövdesi ve app geçersiz kılma');
+$hs->channels->createMessengerLink(['channel' => 'telegram', 'external_id' => 'musteri-42']);
+$assert($t->calls[14]['url'] === 'https://api.test/v1/apps/app_1/messenger-links' && $t->calls[14]['body'] === '{"channel":"telegram","external_id":"musteri-42"}', 'channels.createMessengerLink gövdesi');
+$hs->warehouseSegments->testConnection('whc_1');
+$assert($t->calls[15]['method'] === 'POST' && $t->calls[15]['url'] === 'https://api.test/v1/apps/app_1/warehouse-segments/connections/whc_1/test' && $t->calls[15]['body'] === null, 'warehouseSegments.testConnection gövdesiz POST');
+$t = new FakeTransport([['status' => 200, 'body' => "date,uninstalls\n2026-10-01,3\n"]]);
+$hs = new Client(['api_key' => 'k', 'base_url' => 'https://api.test', 'app_id' => 'app_1', 'transport' => $t, 'sleep' => $noSleep]);
+$csv = $hs->analytics->uninstalls(['format' => 'csv']);
+$assert($csv === "date,uninstalls\n2026-10-01,3\n" && str_ends_with($t->calls[0]['url'], '/analytics/uninstalls?format=csv'), 'analytics.uninstalls format=csv metin döner');
+
 
 echo "Import (multipart) ve yeniden deneme" . PHP_EOL;
 $t = new FakeTransport([

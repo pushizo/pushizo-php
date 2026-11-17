@@ -79,16 +79,16 @@ Her public API işlemi (`/sdk/v1` hariç) bir SDK metoduna karşılık gelir; e�
 | `subscriptions` | `get`, `update`, `delete`, `getUserIdentity`, `updateByToken`, `setOwner` |
 | `inbox` | `list`, `readAll`, `read`, `archive`; ekip gelen kutusu: `listCannedResponses`, `createCannedResponse`, `updateCannedResponse`, `deleteCannedResponse`, `listTeams`, `listAgents`, `getSettings`, `updateSettings`, `metrics` |
 | `events` | `send`, `listDefinitions`, `getDefinition`, `updateDefinition` |
-| `segments` | `list`, `create`, `preview`, `get`, `update`, `delete`, `usedBy`, `estimate` |
-| `templates` | `list`, `create`, `get`, `update`, `delete`, `copyToApp`, `versions`, `render`, `stats` |
-| `campaigns` | `list`, `create`, `get`, `update`, `delete`, `schedule`, `send`, `pause`, `resume`, `cancel`, `duplicate`, `approve`, `stats`, `deliveries`, `resendFailed`, `messages`, `variantStats`, `selectWinner` |
+| `segments` | `list`, `create`, `preview`, `get`, `update`, `delete`, `usedBy`, `refresh`, `estimate` |
+| `templates` | `list`, `create`, `get`, `update`, `delete`, `copyToApp`, `versions`, `revert`, `render`, `stats` |
+| `campaigns` | `list`, `create`, `get`, `update`, `delete`, `schedule`, `send`, `pause`, `resume`, `cancel`, `duplicate`, `approve`, `stats`, `deliveries`, `resendFailed`, `messages`, `variantStats`, `selectWinner`, `preflight` |
 | `journeys` | `list`, `create`, `get`, `update`, `delete`, `saveDraft`, `updateNode`, `versions`, `publish`, `pause`, `resume`, `archive`, `duplicate`, `stats`, `listRuns`, `triggerRun`, `getRun`, `exitRun`, `listForUser` |
 | `inAppMessages` | `list`, `create`, `get`, `update`, `delete`, `setStatus`, `selectWinner` |
 | `preferences` | `listCategories`, `createCategory`, `updateCategory`, `deleteCategory`, `getUser`, `setUser` |
-| `analytics` | `overview`, `messages`, `subscriptions`, `events`, `conversions`, `funnel`, `providers`, `engagement`, `retention` |
+| `analytics` | `overview`, `messages`, `subscriptions`, `uninstalls`, `androidDelivery`, `events`, `conversions`, `funnel`, `providers`, `engagement`, `retention` |
 | `exports` | `create`, `list`, `get` |
 | `imports` | `create` (CSV metni, multipart), `createFromFile`, `list`, `get` |
-| `channels` | `list`, `upsert`, `validate` |
+| `channels` | `list`, `upsert`, `validate`, `createMessengerLink` |
 | `suppressions` | `list`, `create`, `delete` |
 | `webhooks` | `list`, `create`, `get`, `update`, `delete`, `rotateSecret`, `test`, `deliveries`, `replay`, `preview` |
 | `dataFeeds` | `list`, `create`, `get`, `update`, `delete`, `test` |
@@ -99,12 +99,12 @@ Her public API işlemi (`/sdk/v1` hariç) bir SDK metoduna karşılık gelir; e�
 | `whatsappTemplates` | `list`, `sync` |
 | `emailDeliverability` | `get`, `update`, `verifyAddress`, `listWarmupPlans`, `createWarmupPlan`, `updateWarmupPlan`, `deleteWarmupPlan` |
 | `zapier` | `me`, `subscribe`, `unsubscribe`, `samples` |
-| `mcp` | `createCampaignDraft`, `createSegmentDraft`, `createTemplateDraft`, `createJourneyDraft`, `createInAppDraft`, `sendTest` |
+| `mcp` | `createCampaignDraft`, `createSegmentDraft`, `createTemplateDraft`, `createJourneyDraft`, `createInAppDraft`, `createWebCampaignDraft`, `createWebPersonalizationDraft`, `createSurveyDraft`, `createLandingPageDraft`, `sendTest` |
 | `ads` | `listAccounts`, `listAudiences`, `createAudience`, `getAudience`, `updateAudience`, `deleteAudience`, `syncAudience`, `listSyncs`, `createLookalike`, `listCampaigns`, `getCampaign`, `updateCampaign`, `refreshAccount`, `spendReport`, `attributionReport`, `ltvReport`, `listCapiConfigs`, `listCapiDeliveries`, `listAlertRules`, `createAlertRule`, `updateAlertRule`, `deleteAlertRule`, `listAlerts` |
-| `webCampaigns` | `list`, `create`, `get`, `update`, `report`, `setStatus` |
-| `forms` | `list`, `create`, `get`, `listSubmissions`, `submit` |
-| `surveys` | `list`, `create`, `get`, `setStatus`, `report`, `listResponses`, `respond` |
-| `landingPages` | `list`, `get`, `publish`, `unpublish` |
+| `webCampaigns` | `list`, `create`, `get`, `update`, `report`, `setStatus`, `selectWinner`, `delete` |
+| `forms` | `list`, `create`, `get`, `update`, `delete`, `listSubmissions`, `submit` |
+| `surveys` | `list`, `create`, `get`, `update`, `delete`, `setStatus`, `report`, `listResponses`, `respond` |
+| `landingPages` | `list`, `create`, `get`, `update`, `publish`, `unpublish`, `archive`, `versions`, `restoreVersion`, `delete` |
 | `rfm` | `getConfig`, `updateConfig`, `compute`, `overview`, `transitions`, `users` |
 | `predictions` | `list`, `create`, `get`, `update`, `delete`, `compute`, `users` |
 | `featureFlags` | `list`, `create`, `evaluate`, `get`, `update`, `delete` |
@@ -117,6 +117,15 @@ Her public API işlemi (`/sdk/v1` hariç) bir SDK metoduna karşılık gelir; e�
 | `promoCodeLists` | `list`, `create`, `get`, `update`, `delete`, `uploadCodes`, `codes` |
 | `decisionAgents` | `list`, `create`, `get`, `update`, `delete`, `report`, `decide` |
 | `wallet` | `getConfig`, `updateConfig`, `listTemplates`, `createTemplate`, `getTemplate`, `updateTemplate`, `deleteTemplate`, `listPasses`, `issuePass`, `getPass`, `updatePass`, `voidPass` |
+| `siteSearch` | `get`, `updateSettings`, `listSources`, `createSource`, `updateSource`, `deleteSource`, `crawlSource`, `listDocuments`, `putDocument`, `deleteDocument`, `report` |
+| `warehouseSegments` | `options`, `listConnections`, `createConnection`, `getConnection`, `updateConnection`, `deleteConnection`, `testConnection`, `preview`, `listSegments`, `createSegment`, `updateSegment`, `refreshSegment`, `runs` |
+| `webPersonalizations` | `list`, `create`, `get`, `update`, `report`, `setStatus`, `selectWinner`, `delete` |
+| `affinity` | `getConfig`, `updateConfig`, `compute`, `overview`, `user` |
+| `companies` | `list`, `upsert`, `batchUpsert`, `get`, `update`, `delete`, `members`, `setMember`, `batchMembers`, `removeMember`, `forUser`, `forUserBy` |
+| `aiAgents` | `list`, `create`, `get`, `update`, `delete`, `rotateSecret`, `metrics`, `runs` |
+| `sqlSegments` | `schema`, `query`, `runs`, `listSegments`, `createSegment`, `updateSegment`, `refreshSegment` |
+| `customAgents` | `list`, `create`, `get`, `update`, `delete`, `run`, `runs`, `drafts` |
+| `dataPipelines` | `listTransforms`, `createTransform`, `previewTransform`, `getTransform`, `updateTransform`, `deleteTransform`, `listSources`, `createSource`, `getSource`, `updateSource`, `deleteSource`, `rotateSourceSecret`, `runSource`, `listQuarantine`, `reprocessQuarantine`, `discardQuarantine` |
 
 Webhook alıcıları için `Pushizo\Webhook::verify()` ve `constructEvents()` kullanılır.
 

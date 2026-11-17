@@ -87,4 +87,25 @@ final class Surveys
     {
         return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($surveyId) . '/responses', [], $input);
     }
+
+    /**
+     * Anketi düzenler; bağlı in-app mesajı yenilenir.
+     *
+     * @param array<string, mixed> $input name, questions, settings
+     * @return array<string, mixed>
+     */
+    public function update(string $surveyId, array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PATCH', $this->base($appId) . '/' . rawurlencode($surveyId), [], $input);
+    }
+
+    /**
+     * Anketi yanıtları ve bağlı in-app mesajıyla birlikte siler.
+     *
+     * @return array<string, mixed>
+     */
+    public function delete(string $surveyId, ?string $appId = null): array
+    {
+        return $this->client->request('DELETE', $this->base($appId) . '/' . rawurlencode($surveyId));
+    }
 }

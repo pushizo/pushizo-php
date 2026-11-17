@@ -81,4 +81,24 @@ final class WebCampaigns
     {
         return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($campaignId) . '/status', [], ['status' => $status]);
     }
+
+    /**
+     * A/B kazananını seçer; SDK bundan sonra yalnız kazanan görünümü sunar.
+     *
+     * @return array<string, mixed>
+     */
+    public function selectWinner(string $campaignId, string $variantId, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($campaignId) . '/winner', [], ['variant_id' => $variantId]);
+    }
+
+    /**
+     * Kampanyayı olaylarıyla birlikte siler.
+     *
+     * @return array<string, mixed>
+     */
+    public function delete(string $campaignId, ?string $appId = null): array
+    {
+        return $this->client->request('DELETE', $this->base($appId) . '/' . rawurlencode($campaignId));
+    }
 }
