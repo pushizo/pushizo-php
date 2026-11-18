@@ -63,6 +63,28 @@ final class Analytics
     }
 
     /**
+     * Uygulama kaldırma: günlük seri, iOS/Android kırılımı ve kaldırmadan önceki son mesaj.
+     *
+     * @param array{from?:string, to?:string, compare?:bool, format?:'json'|'csv'} $params
+     * @return array<string, mixed>|string
+     */
+    public function uninstalls(array $params = [], ?string $appId = null): array|string
+    {
+        return $this->report('uninstalls', $params, $appId);
+    }
+
+    /**
+     * Android teslimat sağlığı: üretici/ROM bazında teslim oranı, gecikme ve arka plan kısıtı özeti.
+     *
+     * @param array{from?:string, to?:string, compare?:bool, format?:'json'|'csv'} $params
+     * @return array<string, mixed>|string
+     */
+    public function androidDelivery(array $params = [], ?string $appId = null): array|string
+    {
+        return $this->report('android-delivery', $params, $appId);
+    }
+
+    /**
      * Olay hacmi.
      *
      * @param array{from?:string, to?:string, compare?:bool, format?:'json'|'csv', name?:string, group_by?:'day'|'name'} $params
@@ -160,5 +182,15 @@ final class Analytics
             return $this->client->requestText('POST', $path, [], $body);
         }
         return $this->client->request('POST', $path, [], $body);
+    }
+
+    /**
+     * Son 14 gün oturum hacmi ve tekil kullanıcı (günlük toplamlar).
+     *
+     * @return array<string, mixed>
+     */
+    public function sessions(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/analytics/sessions');
     }
 }

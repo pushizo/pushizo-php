@@ -96,4 +96,14 @@ final class Notifications
     {
         return $this->client->request('POST', '/v1/notifications/' . rawurlencode($messageId) . '/export_events', ['app_id' => $this->client->appId($appId)]);
     }
+
+    /**
+     * Mesaj izleme (`admin`): `msg_`/`dlv_`/`sub_` kimliği, external_id veya token'ın son 8 karakteri.
+     *
+     * @return array<string, mixed>
+     */
+    public function trace(string $q, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/trace', ['q' => $q]);
+    }
 }

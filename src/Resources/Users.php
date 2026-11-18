@@ -121,4 +121,41 @@ final class Users
     {
         return $this->client->request('POST', $this->base($appId) . '/by/' . rawurlencode($label) . '/' . rawurlencode($value) . '/subscriptions', [], $subscription);
     }
+
+    private function one(string $label, string $value, ?string $appId): string
+    {
+        return $this->base($appId) . '/by/' . rawurlencode($label) . '/' . rawurlencode($value);
+    }
+
+    /**
+     * Olay ve teslimat zaman çizelgesi (en yeni 40 kayıt).
+     *
+     * @return array<string, mixed>
+     */
+    public function timeline(string $label, string $value, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->one($label, $value, $appId) . '/timeline');
+    }
+
+    /**
+     * Kullanıcının son olayları.
+     *
+     * @param array{limit?:int} $params
+     * @return array<string, mixed>
+     */
+    public function events(string $label, string $value, array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->one($label, $value, $appId) . '/events', $params);
+    }
+
+    /**
+     * Kullanıcının son mesajları (teslimatlar, en yeni önce).
+     *
+     * @param array{limit?:int} $params
+     * @return array<string, mixed>
+     */
+    public function messages(string $label, string $value, array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->one($label, $value, $appId) . '/messages', $params);
+    }
 }

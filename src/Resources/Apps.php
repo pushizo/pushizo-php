@@ -54,4 +54,15 @@ final class Apps
     {
         return $this->client->request('PATCH', '/v1/apps/' . rawurlencode($this->client->appId($appId)), [], $body);
     }
+
+    /**
+     * SDK hata raporları (son 7 gün; `admin`).
+     *
+     * @param array{limit?:int, cursor?:string, platform?:string, level?:'error'|'warning'} $params
+     * @return array<string, mixed>
+     */
+    public function sdkErrors(array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/sdk-errors', $params);
+    }
 }

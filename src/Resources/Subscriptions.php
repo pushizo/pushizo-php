@@ -67,4 +67,26 @@ final class Subscriptions
     {
         return $this->client->request('POST', $this->base($appId, $subscriptionId) . '/owner', [], ['external_id' => $externalId]);
     }
+
+    /**
+     * Abonelik listesi (cursor); token'ın yalnızca son 8 karakteri döner.
+     *
+     * @param array{limit?:int, cursor?:string, channel?:string, status?:string, test_device?:bool, since?:string} $params
+     * @return array<string, mixed>
+     */
+    public function list(array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/subscriptions', $params);
+    }
+
+    /**
+     * Toplu temizlik: `invalid` (varsayılan) veya `unsubscribed` durumundaki abonelikleri kalıcı olarak siler.
+     *
+     * @param 'invalid'|'unsubscribed' $status
+     * @return array<string, mixed>
+     */
+    public function cleanup(string $status = 'invalid', ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->client->appPath($appId) . '/subscriptions/cleanup', [], ['status' => $status]);
+    }
 }

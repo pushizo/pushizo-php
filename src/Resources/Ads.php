@@ -249,4 +249,106 @@ final class Ads
     {
         return $this->client->request('GET', $this->base($appId) . '/alerts', $params);
     }
+
+    /**
+     * Reklam platformları: etkin/mock, tanımlayıcılar ve lookalike desteği.
+     *
+     * @return array<string, mixed>
+     */
+    public function listPlatforms(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/platforms');
+    }
+
+    /**
+     * Kampanya + reklam seti (Pushizo kitlesi) + isteğe bağlı kreatif/reklam oluşturur; reklam platformuna yazılır.
+     *
+     * @param array<string, mixed> $input `ad_account_id`, `audience_id`, `name`, `objective`, `daily_budget`, `countries` zorunlu
+     * @return array<string, mixed>
+     */
+    public function createCampaign(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/campaigns', [], $input);
+    }
+
+    /**
+     * Kreatif önizlemesi: platform önizleme bağlantısı ve kreatif özeti.
+     *
+     * @return array<string, mixed>
+     */
+    public function previewCampaign(string $entityId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/campaigns/' . rawurlencode($entityId) . '/preview');
+    }
+
+    /**
+     * Meta: hesabın tanıtabildiği Facebook sayfaları.
+     *
+     * @return array<string, mixed>
+     */
+    public function listPages(string $accountId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/accounts/' . rawurlencode($accountId) . '/pages');
+    }
+
+    /**
+     * Yüklenen kreatif görselleri.
+     *
+     * @return array<string, mixed>
+     */
+    public function listCreatives(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/creatives');
+    }
+
+    /**
+     * Kreatif görsel yükler (multipart `file`: PNG/JPEG, en çok 5 MB). `$content` dosyanın ham baytlarıdır.
+     *
+     * @return array<string, mixed>
+     */
+    public function uploadCreative(string $content, string $filename = 'creative.png', ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/creatives', [], null, ['multipart' => ['file' => ['filename' => $filename, 'content' => $content, 'content_type' => str_ends_with(strtolower($filename), '.png') ? 'image/png' : 'image/jpeg']]]);
+    }
+
+    /**
+     * Raporlama para birimi (org) ve atribüsyon varsayılanları (app).
+     *
+     * @return array<string, mixed>
+     */
+    public function getSettings(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/settings');
+    }
+
+    /**
+     * Raporlama para birimi ve atribüsyon varsayılanlarını günceller.
+     *
+     * @param array{reporting_currency?:string, attribution_model?:string, window_days?:int, half_life_days?:int, conversion_events?:list<string>} $input
+     * @return array<string, mixed>
+     */
+    public function updateSettings(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PUT', $this->base($appId) . '/settings', [], $input);
+    }
+
+    /**
+     * Platform test aracına sentetik test olayı gönderir.
+     *
+     * @return array<string, mixed>
+     */
+    public function testCapiConfig(string $configId, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/conversions-api/configs/' . rawurlencode($configId) . '/test');
+    }
+
+    /**
+     * Başarısız Conversions API teslimini yeniden dener.
+     *
+     * @return array<string, mixed>
+     */
+    public function retryCapiDelivery(string $deliveryId, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/conversions-api/deliveries/' . rawurlencode($deliveryId) . '/retry');
+    }
 }

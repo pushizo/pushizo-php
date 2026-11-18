@@ -21,7 +21,7 @@ use Pushizo\Transport\TransportInterface;
  */
 final class Client
 {
-    public const VERSION = '0.2.0';
+    public const VERSION = '0.3.0';
     private const BACKOFF_MS = [300, 1000, 3000];
     /** Sunucuda tekrarlanması ek yan etki doğurmayan HTTP metotları; 5xx ve ağ hatalarında serbestçe yeniden denenir. */
     private const IDEMPOTENT_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'];
@@ -70,6 +70,8 @@ final class Client
     public readonly Resources\WhatsAppTemplates $whatsappTemplates;
     public readonly Resources\EmailDeliverability $emailDeliverability;
     public readonly Resources\Zapier $zapier;
+    /** Hazır entegrasyonlar: durum, çalışma geçmişi, bağlantı testi ve cohort senkronu (ADR-0095). */
+    public readonly Resources\Integrations $integrations;
     /** Reklam hesapları, kitleler (ADR-0037), kampanya raporlama, atribüsyon ve bütçe uyarıları (ADR-0038). */
     public readonly Resources\Ads $ads;
     public readonly Resources\Mcp $mcp;
@@ -105,6 +107,24 @@ final class Client
     public readonly Resources\DecisionAgents $decisionAgents;
     /** Apple ve Google Wallet. */
     public readonly Resources\Wallet $wallet;
+    /** Site içi AI arama: ayarlar, kaynaklar, belge dizini ve rapor. */
+    public readonly Resources\SiteSearch $siteSearch;
+    /** Zero-copy ambar segmentleri (BigQuery, Snowflake, Databricks). */
+    public readonly Resources\WarehouseSegments $warehouseSegments;
+    /** Web sayfası kişiselleştirme deneyimleri. */
+    public readonly Resources\WebPersonalizations $webPersonalizations;
+    /** İlgi etiketleri. */
+    public readonly Resources\Affinity $affinity;
+    /** Şirket/hesap nesneleri ve kişi ↔ şirket üyeliği. */
+    public readonly Resources\Companies $companies;
+    /** Konuşmalı AI ajanları. */
+    public readonly Resources\AiAgents $aiAgents;
+    /** SQL sorgu ve SQL segmentleri. */
+    public readonly Resources\SqlSegments $sqlSegments;
+    /** Özel AI ajanları (taslak üreten). */
+    public readonly Resources\CustomAgents $customAgents;
+    /** Veri dönüştürmeleri, kaynakları ve karantina. */
+    public readonly Resources\DataPipelines $dataPipelines;
 
     /**
      * @param array{
@@ -160,6 +180,7 @@ final class Client
         $this->whatsappTemplates = new Resources\WhatsAppTemplates($this);
         $this->emailDeliverability = new Resources\EmailDeliverability($this);
         $this->zapier = new Resources\Zapier($this);
+        $this->integrations = new Resources\Integrations($this);
         $this->ads = new Resources\Ads($this);
         $this->mcp = new Resources\Mcp($this);
         $this->webCampaigns = new Resources\WebCampaigns($this);
@@ -178,6 +199,15 @@ final class Client
         $this->promoCodeLists = new Resources\PromoCodeLists($this);
         $this->decisionAgents = new Resources\DecisionAgents($this);
         $this->wallet = new Resources\Wallet($this);
+        $this->siteSearch = new Resources\SiteSearch($this);
+        $this->warehouseSegments = new Resources\WarehouseSegments($this);
+        $this->webPersonalizations = new Resources\WebPersonalizations($this);
+        $this->affinity = new Resources\Affinity($this);
+        $this->companies = new Resources\Companies($this);
+        $this->aiAgents = new Resources\AiAgents($this);
+        $this->sqlSegments = new Resources\SqlSegments($this);
+        $this->customAgents = new Resources\CustomAgents($this);
+        $this->dataPipelines = new Resources\DataPipelines($this);
     }
 
     /** SDK identity verification: `identity_hash` = HMAC-SHA256(sdk_secret, external_id). */

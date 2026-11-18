@@ -63,4 +63,23 @@ final class Forms
     {
         return $this->client->request('POST', $this->base($appId) . '/' . rawurlencode($formId) . '/submissions', [], $input);
     }
+
+    /**
+     * @param array<string, mixed> $input name, fields, settings
+     * @return array<string, mixed>
+     */
+    public function update(string $formId, array $input, ?string $appId = null): array
+    {
+        return $this->client->request('PATCH', $this->base($appId) . '/' . rawurlencode($formId), [], $input);
+    }
+
+    /**
+     * Formu gönderimleriyle birlikte siler.
+     *
+     * @return array<string, mixed>
+     */
+    public function delete(string $formId, ?string $appId = null): array
+    {
+        return $this->client->request('DELETE', $this->base($appId) . '/' . rawurlencode($formId));
+    }
 }

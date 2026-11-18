@@ -114,4 +114,66 @@ final class EmailDeliverability
     {
         return $this->client->request('POST', $this->base($appId) . '/postmaster/sync');
     }
+
+    /**
+     * Liste temizliği durumu: e-posta aboneliklerinin denetim dağılımı ve son doğrulama çalıştırması.
+     *
+     * @return array<string, mixed>
+     */
+    public function hygiene(?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/hygiene');
+    }
+
+    /**
+     * Tüm e-posta aboneliklerini toplu doğrular; etkin çalıştırma varsa o döner.
+     *
+     * @return array<string, mixed>
+     */
+    public function startHygieneRun(?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/hygiene-runs', [], new \stdClass());
+    }
+
+    /**
+     * Liste doğrulama çalıştırması (ilerleme ve özet).
+     *
+     * @return array<string, mixed>
+     */
+    public function getHygieneRun(string $runId, ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/hygiene-runs/' . rawurlencode($runId));
+    }
+
+    /**
+     * Tamamlanmış doğrulamada geçersiz bulunan adresleri bastırır (abonelik `invalid` + suppression list).
+     *
+     * @return array<string, mixed>
+     */
+    public function suppressHygieneInvalid(string $runId, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/hygiene-runs/' . rawurlencode($runId) . '/suppress', [], new \stdClass());
+    }
+
+    /**
+     * Posta sağlayıcısı bazında teslim, açılma, tıklama, bounce ve şikâyet sayıları.
+     *
+     * @param array{days?:int} $params
+     * @return array<string, mixed>
+     */
+    public function insights(array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/insights', $params);
+    }
+
+    /**
+     * Bounce eğilimi, tür/neden dağılımı ve en çok bounce alan alıcı alan adları.
+     *
+     * @param array{days?:int} $params
+     * @return array<string, mixed>
+     */
+    public function bounces(array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->base($appId) . '/bounces', $params);
+    }
 }

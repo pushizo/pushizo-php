@@ -74,6 +74,50 @@ final class Mcp
     }
 
     /**
+     * Web kampanyası `draft` oluşur; yayımlanmaz.
+     *
+     * @param array<string, mixed> $input name, display, trigger, conditions, targeting, frequency, variants, priority
+     * @return array<string, mixed>
+     */
+    public function createWebCampaignDraft(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/web-campaign-drafts', [], $input);
+    }
+
+    /**
+     * Web kişiselleştirme deneyimi `draft` oluşur; yayımlanmaz (Growth+).
+     *
+     * @param array<string, mixed> $input name, changes, variants, conditions, targeting, goal, priority
+     * @return array<string, mixed>
+     */
+    public function createWebPersonalizationDraft(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/web-personalization-drafts', [], $input);
+    }
+
+    /**
+     * Anket `draft` oluşur; etkinleştirilmez.
+     *
+     * @param array<string, mixed> $input name, questions, settings
+     * @return array<string, mixed>
+     */
+    public function createSurveyDraft(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/survey-drafts', [], $input);
+    }
+
+    /**
+     * Landing sayfası `draft` oluşur; yayımlanmaz.
+     *
+     * @param array<string, mixed> $input name, slug, document, seo, settings
+     * @return array<string, mixed>
+     */
+    public function createLandingPageDraft(array $input, ?string $appId = null): array
+    {
+        return $this->client->request('POST', $this->base($appId) . '/landing-page-drafts', [], $input);
+    }
+
+    /**
      * Yalnızca test cihazlarına test push'u (seçilen abonelikler test cihazı olmalıdır).
      *
      * @param array<string, mixed> $input contents, headings?, url?, data?, subscription_ids?

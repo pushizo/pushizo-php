@@ -177,6 +177,17 @@ final class Campaigns
     }
 
     /**
+     * Yayın öncesi denetim raporu (marka, yasaklı ifade, bağlantı, kişiselleştirme, KVKK/İYS). `$checkLinks = true`
+     * bağlantıları da canlı denetler.
+     *
+     * @return array<string, mixed>
+     */
+    public function preflight(string $campaignId, ?string $appId = null, bool $checkLinks = false): array
+    {
+        return $this->client->request('POST', $this->one($campaignId, $appId) . '/preflight', $checkLinks ? ['check_links' => 'true'] : []);
+    }
+
+    /**
      * A/B testi: varyant bazlı gönderim/açılma/tıklama/dönüşüm, kontrol grubu ve anlamlılık.
      *
      * @return array<string, mixed>

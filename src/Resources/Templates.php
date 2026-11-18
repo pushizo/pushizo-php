@@ -101,4 +101,15 @@ final class Templates
     {
         return $this->client->request('POST', $this->one($templateId, $appId) . '/render', [], (object) $body);
     }
+
+    /**
+     * Eski bir sürümü geçerli sürüm yapar.
+     *
+     * @return array<string, mixed>
+     */
+    public function revert(string $templateId, int $version, ?string $appId = null): array
+    {
+        $number = (string) $version;
+        return $this->client->request('POST', $this->one($templateId, $appId) . '/versions/' . rawurlencode($number) . '/revert');
+    }
 }

@@ -46,4 +46,15 @@ final class Events
     {
         return $this->client->request('PATCH', $this->client->appPath($appId) . '/events/definitions/' . rawurlencode($name), [], $body);
     }
+
+    /**
+     * Son olaylar (kullanıcı kimliği ve özelliklerle).
+     *
+     * @param array{name?:string, limit?:int, since?:string} $params
+     * @return array<string, mixed>
+     */
+    public function recent(array $params = [], ?string $appId = null): array
+    {
+        return $this->client->request('GET', $this->client->appPath($appId) . '/events/recent', $params);
+    }
 }
